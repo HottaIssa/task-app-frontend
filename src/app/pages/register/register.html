@@ -1,0 +1,61 @@
+<div class="flex w-full justify-center">
+  <form (submit)="onSubmit($event)" class="flex flex-col gap-4 w-96 m-4 font-semibold">
+    <h1 class="text-center">Register</h1>
+    <div class="flex flex-col gap-1">
+      <label for="username">Username:</label>
+      <input type="text" id="username" placeholder="Username" [formField]="registerForm.username" class="">
+      @if(registerForm.username().touched() && registerForm.username().invalid()) {
+        <ul class="error-list">
+          @for (error of registerForm.username().errors(); track error.message) {
+            <li class="text-red-500">{{ error.message }}</li>
+          }
+        </ul>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Password" [formField]="registerForm.password">
+      @if(registerForm.password().touched() && registerForm.password().invalid()) {
+        <ul class="error-list">
+          @for (error of registerForm.password().errors(); track error.message) {
+            <li class="text-red-500">{{ error.message }}</li>
+          }
+        </ul>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Email" [formField]="registerForm.email">
+      @if(registerForm.email().touched() && registerForm.email().invalid()) {
+        <ul class="error-list">
+          @for (error of registerForm.email().errors(); track error.message) {
+            <li class="text-red-500">{{ error.message }}</li>
+          }
+        </ul>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" placeholder="First Name" [formField]="registerForm.firstName">
+      @if(registerForm.firstName().touched() && registerForm.firstName().invalid()) {
+        <ul class="error-list">
+          @for (error of registerForm.firstName().errors(); track error.message) {
+            <li class="text-red-500">{{ error.message }}</li>
+          }
+        </ul>
+      }
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" placeholder="Last Name" [formField]="registerForm.lastName">
+      @if(registerForm.lastName().touched() && registerForm.lastName().invalid()) {
+        <ul class="error-list">
+          @for (error of registerForm.lastName().errors(); track error.message) {
+            <li class="text-red-500">{{ error.message }}</li>
+          }
+        </ul>
+      }
+    </div>
+    <button type="submit" [disabled]="registerForm().invalid()" class="border-2">Register</button>
+  </form>
+</div>
