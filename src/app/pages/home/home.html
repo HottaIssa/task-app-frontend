@@ -1,1 +1,13 @@
-<p>home works!</p>
+<div class="w-full flex flex-col items-center gap-12">
+  <div class="w-full flex justify-between px-8">
+    <h2>'s Projects</h2>
+    <button class="border px-4 py-2 rounded-xl">Create Project</button>
+  </div>
+  <div class="grid grid-cols-3">
+    @for (project of projects; track project.id) {
+      <app-project-card [project]="project"/>
+    } @empty {
+      <div class="col-span-3">Create your first project !!!</div>
+    }
+  </div>
+</div>
