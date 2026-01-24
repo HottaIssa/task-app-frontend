@@ -4,10 +4,12 @@
     <button class="border px-4 py-2 rounded-xl">Create Project</button>
   </div>
   <div class="grid grid-cols-3">
-    @for (project of projects; track project.id) {
+    @for (project of projects(); track project.id) {
       <app-project-card [project]="project"/>
-    } @empty {
-      <div class="col-span-3">Create your first project !!!</div>
+    }@empty {
+      <div class="col-span-3">
+        <p class="">No projects found.</p>
+      </div>
     }
   </div>
 </div>

@@ -1,0 +1,13 @@
+<div class="grid grid-rows-[auto_1fr] w-full h-full">
+  <div class="w-full flex justify-between px-9 py-2 bg-black/20">
+    <h3>{{project().project.name}}</h3>
+    <nav class="flex gap-3">
+      <a [routerLink]="['tasks']">TASKS</a>
+      <a [routerLink]="['members']">MEMBERS</a>
+      <a [routerLink]="['about']">ABOUT</a>
+    </nav>
+  </div>
+  <div class="">
+    <app-tasks [columns]="project().columns"></app-tasks>
+  </div>
+</div>

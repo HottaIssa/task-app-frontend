@@ -4,6 +4,7 @@ import { Register } from './pages/register/register';
 import { Home } from './pages/home/home'
 import { authGuard } from './guards/auth-guard';
 import { publicGuard } from './guards/public-guard';
+import { Project } from './pages/project/project';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,12 @@ export const routes: Routes = [
     title: 'Home | SaiDone',
     component: Home,
     canActivate: [authGuard],
+  },
+  {
+    path: 'project/:id',
+    title: 'Project Details | SaiDone',
+    component: Project,
+    canActivate: [authGuard]
   },
   {
     path: '**',

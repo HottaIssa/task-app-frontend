@@ -25,3 +25,9 @@ p {
 :root {
   font-family:'Space Grotesk', serif;
 }
+
+app-root{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}

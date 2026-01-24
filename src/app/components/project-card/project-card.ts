@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 interface Project {
   id: string;
@@ -12,11 +13,11 @@ interface Project {
 
 @Component({
   selector: 'app-project-card',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './project-card.html',
   styles: ``,
 })
 export class ProjectCard {
-  @Input() project!: Project;
+  project = input.required<Project>();
 
 }

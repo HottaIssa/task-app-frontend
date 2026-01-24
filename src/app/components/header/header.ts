@@ -7,5 +7,8 @@ import { Component } from '@angular/core';
   styles: ``,
 })
 export class Header {
-
+  Logout() {
+    localStorage.removeItem('token');
+    
+  }
 }

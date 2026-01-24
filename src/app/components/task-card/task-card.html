@@ -1,0 +1,9 @@
+<div class="grid bg-[#F6FAF9] grid-cols-[1fr_auto] grid-rows-[auto_1fr_auto] grid-flow-col rounded-xl p-3 gap-3">
+  <h4>{{ task().title }}</h4>
+  <p>{{ task().description }}</p>
+  <p>Assign to: <span>{{task().assignedTo.username}}</span></p>
+  <p class="justify-self-end">{{task().priority}}</p>
+  <div class="grid row-span-2 grid-cols-subgrid grid-rows-[1fr_auto] justify-self-end">
+    <p class="{{task().isOverdue ? 'text-red-500' : 'text-gray-500'}} row-start-2">{{task().dueDate | date: 'dd/MM/yy'}}</p>
+  </div>
+</div>

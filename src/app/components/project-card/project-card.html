@@ -1,8 +1,8 @@
-<div>
+<a class="border-2 px-6 py-4 rounded-xl flex flex-col gap-2 cursor-pointer hover:shadow-lg hover:border-blue-500 hover:scale-102 transition-all" [routerLink]="['/project', project().id]">
   <div>
-    <h3>{{ project.name}}</h3>
-    <span class="">{{project.status}}</span>
-    <p>{{project.description}}</p>
+    <h3>{{ project().name}}</h3>
+    <span class="">{{project().status}}</span>
+    <p>{{project().description}}</p>
   </div>
   <img src="" alt="">
-</div>
+</a>
