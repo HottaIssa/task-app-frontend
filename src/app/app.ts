@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Auth } from './services/auth';
+import { AuthService } from './services/auth-service';
 import { Header } from "./components/header/header";
 
 @Component({
@@ -10,6 +10,5 @@ import { Header } from "./components/header/header";
   styleUrl: './app.css',
 })
 export class App {
-  constructor(public authService: Auth){
-  }
+  public authService = inject(AuthService)
 }

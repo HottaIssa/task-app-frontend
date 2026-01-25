@@ -2,9 +2,8 @@
   <div class="w-full flex justify-between px-9 py-2 bg-black/20">
     <h3>{{project().project.name}}</h3>
     <nav class="flex gap-3">
-      <a [routerLink]="['tasks']">TASKS</a>
-      <a [routerLink]="['members']">MEMBERS</a>
-      <a [routerLink]="['about']">ABOUT</a>
+      <app-members [projectId]="project().project.id"></app-members>
+      <app-about [projectId]="project().project.id"></app-about>
     </nav>
   </div>
   <div class="">

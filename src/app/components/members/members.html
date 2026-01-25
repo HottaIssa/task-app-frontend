@@ -1,1 +1,36 @@
-<p>members works!</p>
+<button class="cursor-pointer hover:bg-black/20 rounded-lg p-1" (click)="openModal()">MEMBERS</button>
+
+@if (isModalOpen()) {
+  <app-modal-layout
+    modalTitle="MEMBERS"
+    (onClose)="isModalOpen.set(false)">
+
+    <table classs="w-full text-sm text-left rtl:text-right text-body">
+      <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default">
+        <tr>
+          <th class="px-6 py-3">USERNAME</th>
+          <th class="px-6 py-3">FULL NAME</th>
+          <th class="px-6 py-3">EMAIL</th>
+          <th class="px-6 py-3">ROL</th>
+          <th class="px-6 py-3">JOINED AT</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (member of members(); track member.id){
+        <tr class="bg-neutral-primary border-b border-default">
+          <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
+            <div>
+              <img src=`{{member.user.avatar_url}}` alt="">
+              <span>{{member.user.username}}</span>
+            </div>
+          </th>
+          <td class="px-6 py-4">{{member.user.firstName}} {{member.user.lastName}}</td>
+          <td class="px-6 py-4">{{member.user.email}}</td>
+          <td class="px-6 py-4">{{member.roleMember}}</td>
+          <td class="px-6 py-4"><span>{{member.joinedAt | date: "dd/MM/yyyy"}}</span></td>
+        </tr>}
+      </tbody>
+    </table>
+
+  </app-modal-layout>
+}

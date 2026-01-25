@@ -1,15 +1,8 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { form, FormField, required, submit, email, minLength, maxLength } from '@angular/forms/signals';
-import { Auth } from '../../services/auth';
-
-interface RegisterData {
-  username: string;
-  password: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
+import { AuthService } from '../../services/auth-service';
+import { RegisterData } from '../../types/U';
 
 @Component({
   selector: 'app-register',
@@ -26,8 +19,8 @@ export class Register {
     lastName: '',
   });
 
-  constructor(private authService: Auth, private router: Router){
-  }
+  private authService = inject(AuthService)
+  private router = inject(Router)
 
   registerForm = form(this.registerModel, (schemaPath) => {
     required(schemaPath.username, { message: 'Username is requiered' });
@@ -51,7 +44,7 @@ export class Register {
         },
         error: (error) => {
           console.error('Registration failed', error);
-        }
+        },
       });
     });
   }

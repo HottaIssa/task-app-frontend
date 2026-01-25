@@ -1,44 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Project as ProjectService } from '../../services/project';
+import { ActivatedRoute } from '@angular/router';
+import { ProjectService } from '../../services/project-service';
 import { Tasks } from "./tasks/tasks";
-
-export interface TaskProject {
-  columns: Column[];
-  project: {
-    id: string;
-    name: string;
-    totalTasks: number;
-    completeTasks: number;
-  };
-}
-
-export interface Column {
-  statusId: number;
-  statusName: string;
-  statusColor: string;
-  orderIndex: number;
-  taskCount: number;
-  tasks: Task[];
-}
-
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: string;
-  dueDate: Date;
-  isOverdue: boolean;
-  assignedTo: {
-    id: string;
-    username: string;
-    email: string;
-  };
-}
+import { Members } from "../../components/members/members";
+import { TaskProject } from '../../types/U';
+import { About } from '../../components/about/about';
 
 @Component({
   selector: 'app-project',
-  imports: [RouterLink, Tasks],
+  imports: [Tasks, Members, About],
   templateUrl: './project.html',
   styles: ``,
 })
@@ -49,7 +19,6 @@ export class Project implements OnInit {
   private projectService = inject(ProjectService);
 
   ngOnInit(): void {
-    console.log(this.route)
     this.route.paramMap.subscribe((params) => {
       this.projectId = params.get('id');
       if (this.projectId) {
@@ -61,7 +30,6 @@ export class Project implements OnInit {
   loadData(id: string) {
     this.projectService.getTasksByProject(id).subscribe((response) => {
       this.project.set(response);
-      console.log(this.project());
     });
   }
 }

@@ -13,7 +13,7 @@ interface TaskResponse {
 @Injectable({
   providedIn: 'root',
 })
-export class Task {
+export class TaskService {
   private apiUrl = 'http://localhost:8080/api';
 
   private http = inject(HttpClient);

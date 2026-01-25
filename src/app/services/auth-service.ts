@@ -1,38 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-interface RegisterRequest {
-  username: string;
-  password: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
-
-interface RegisterResponse {
-  id: string;
-  username: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  avatar_url: string;
-}
-
-interface LoginRequest {
-  username: string;
-  password: string;
-}
-
-interface LoginResponse {
-  token: string;
-}
+import {jwtDecode} from 'jwt-decode';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../types/U';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Auth {
+export class AuthService {
   private apiUrl = 'http://localhost:8080/api';
 
   constructor(private http: HttpClient) {}
@@ -45,7 +19,7 @@ export class Auth {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, data);
   }
 
-  saveToken(token: string){
+  saveToken(token: string) {
     localStorage.setItem('token', token);
   }
 
@@ -57,7 +31,29 @@ export class Auth {
     return this.getToken() !== null;
   }
 
-  logout(): void{
+  logout(): void {
     localStorage.removeItem('token');
+  }
+
+  isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      return true;
+    }
+    const decodedToken = jwtDecode(token);
+
+    if (decodedToken.exp && decodedToken.exp < Date.now() / 1000) {
+      return true;
+    }
+    return false;
+  }
+
+  getUsername(): string | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+    const decodedToken = jwtDecode(token);
+    return decodedToken.sub as string;
   }
 }

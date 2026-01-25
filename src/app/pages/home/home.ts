@@ -1,27 +1,19 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ProjectCard } from "../../components/project-card/project-card";
-import { Project } from '../../services/project';
+import { ProjectService } from '../../services/project-service';
 import { CommonModule } from '@angular/common';
-
-interface ProjectResponse {
-  id: string,
-  name: string,
-  description: string,
-  status: string,
-  startDate: string,
-  endDate: string,
-  createdBy: string
-}
+import { ProjectResponse } from '../../types/U';
+import { ProjectForm } from "../../components/project-form/project-form";
 
 @Component({
   selector: 'app-home',
-  imports: [ProjectCard, CommonModule],
+  imports: [ProjectCard, CommonModule, ProjectForm],
   templateUrl: './home.html',
   styles: ``,
 })
-export class Home implements OnInit{
+export class Home implements OnInit {
   projects = signal<ProjectResponse[]>([]);
-  constructor(private projectService: Project) {}
+  constructor(private projectService: ProjectService) {}
 
   ngOnInit() {
     this.projectService.getProjects().subscribe({

@@ -1,29 +1,6 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { SectionTasks } from "../../../components/section-tasks/section-tasks";
-import { Project } from '../../../services/project';
-
-export interface Column {
-  statusId: number;
-  statusName: string;
-  statusColor: string;
-  orderIndex: number;
-  taskCount: number;
-  tasks: Task[];
-}
-
-export interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: string;
-  dueDate: Date;
-  isOverdue: boolean;
-  assignedTo: {
-    id: string;
-    username: string;
-    email: string;
-  };
-}
+import { Column } from '../../../types/U';
 
 @Component({
   selector: 'app-tasks',
