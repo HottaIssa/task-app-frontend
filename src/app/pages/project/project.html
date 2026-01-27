@@ -1,9 +1,9 @@
 <div class="grid grid-rows-[auto_1fr] w-full h-full">
-  <div class="w-full flex justify-between px-9 py-2 bg-black/20">
+  <div class="w-full flex justify-between px-9 py-2">
     <h3>{{project().project.name}}</h3>
     <nav class="flex gap-3">
-      <app-members [projectId]="project().project.id"></app-members>
-      <app-about [projectId]="project().project.id"></app-about>
+      <app-members [projectId]="project().project.id" [role]="project().project.roleMember"></app-members>
+      <app-about [projectId]="project().project.id" [role]="project().project.roleMember"></app-about>
     </nav>
   </div>
   <div class="">

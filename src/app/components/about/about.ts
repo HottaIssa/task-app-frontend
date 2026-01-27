@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 export class About {
   isModalOpen = signal(false);
   projectId = input.required<string>();
+  role = input.required<string>();
   project = signal<Project>({} as Project);
   private projectService = inject(ProjectService);
 

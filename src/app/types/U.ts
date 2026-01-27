@@ -5,6 +5,7 @@ export interface TaskProject {
     name: string;
     totalTasks: number;
     completeTasks: number;
+    roleMember: string;
   };
 }
 
@@ -14,14 +15,15 @@ export interface Column {
   statusColor: string;
   orderIndex: number;
   taskCount: number;
-  tasks: Task[];
+  tasks: TaskCardResponse[];
 }
 
-export interface Task {
+export interface TaskCardResponse {
   id: string;
   title: string;
   description: string;
   priority: string;
+  status: Status;
   dueDate: Date;
   isOverdue: boolean;
   assignedTo: {
@@ -43,12 +45,12 @@ export interface ProjectResponse {
 
 export interface Member {
   id: string;
-  user: User;
+  user: UserResponse;
   roleMember: string;
   joinedAt: Date;
 }
 
-export interface User {
+export interface UserResponse {
   id: string;
   username: string;
   email: string;
@@ -64,17 +66,6 @@ export interface RegisterRequest {
   email: string;
   firstName: string;
   lastName: string;
-}
-
-export interface RegisterResponse {
-  id: string;
-  username: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  avatar_url: string;
 }
 
 export interface LoginRequest {
@@ -107,7 +98,7 @@ export interface Project {
   status: string;
   startDate: Date;
   endDate: Date;
-  createdBy: User;
+  createdBy: UserResponse;
 }
 
 export interface ProjectRequest {
@@ -117,3 +108,50 @@ export interface ProjectRequest {
   endDate: string | null;
 }
 
+export interface MemberRequest {
+  userId: string;
+  role: roleMember;
+}
+
+export interface TaskResponse {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  priority: string;
+  dueDate: string;
+}
+
+export interface TaskFilters {
+  projectId?: string | null;
+  status?: string | null;
+  priority?: string | null;
+  search?: string | null;
+  dueFrom?: string | null;
+  dueTo?: string | null;
+  isOverdue?: boolean;
+  isAssignedToMe?: boolean;
+  isCreatedByMe?: boolean;
+  page?: number;
+  size?: number;
+  sort?: string;
+}
+
+export interface TaskPage {
+  content: TaskCardResponse[];
+  page: {
+    size: number;
+    number: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}
+
+export interface Status {
+  id: number;
+  name: string;
+  color: string;
+  orderIndex: number;
+}
+
+export type roleMember = 'MEMBER' | 'ADMIN' | 'VIEWER';

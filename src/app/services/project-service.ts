@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Member, ProjectResponse, TaskProject, Project, ProjectRequest } from '../types/U';
+import { Member, ProjectResponse, TaskProject, Project, ProjectRequest, MemberRequest } from '../types/U';
 
 @Injectable({
   providedIn: 'root',
@@ -28,5 +28,9 @@ export class ProjectService {
 
   getMembersByProject(projectId: string){
     return this.http.get<Member[]>(`${this.apiUrl}/projects/${projectId}/members`);
+  }
+
+  addMember(projectId: string, data: MemberRequest) {
+    return this.http.post<Member>(`${this.apiUrl}/projects/${projectId}/members`, data);
   }
 }

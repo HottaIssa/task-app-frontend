@@ -1,1 +1,123 @@
-<p>tasks works!</p>
+<div class="w-full mt-8">
+    <div class="flex w-full items-center justify-between px-24 relative">
+      <div class="flex items-center">
+        <button
+          class="{{
+            isActive === '1' ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs"
+          (click)="setActive('1')"
+        >
+          ALL
+        </button>
+        <button
+          class="{{
+            isActive === '2' ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs"
+          (click)="setActive('2')"
+        >
+          ASSIGNED TO ME
+        </button>
+        <button
+          class="{{
+            isActive === '3' ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs"
+          (click)="setActive('3')"
+        >
+          CREATED BY ME
+        </button>
+
+      </div>
+      <div class="flex items-center gap-4">
+          <input type="text" placeholder="Title or Description" [(ngModel)]="searchText"
+      (keyup.enter)="search()" />
+      <button (click)="search()" class="button-nav p-2!">🔍 Buscar</button>
+        <button (click)="isModalOpen.set(true)" class="button-nav {{isModalOpen() ? 'bg-emerald-400 text-white' : ''}}">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+            />
+          </svg>
+        </button>
+        @if (isModalOpen()) {
+          <app-dropdown-layout (onClose)="isModalOpen.set(false)" class="absolute right-2">
+            <div class="flex flex-col gap-2 form-filter">
+              <select [(ngModel)]="selectedStatus" title="List status" (change)="applyFilters()">
+                <option value="">All Status</option>
+                <option value="TODO">Todo</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="IN_REVIEW">In Review</option>
+                <option value="DONE">Completed</option>
+              </select>
+              <select [(ngModel)]="selectedPriority" title="List Priority" (change)="applyFilters()">
+                <option value="">All Priorities</option>
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+              </select>
+              <label for="">
+                From:
+                <input type="datetime-local" [(ngModel)]="dueFrom" (change)="applyFilters()"/>
+              </label>
+              <label>
+                To:
+                <input type="datetime-local" [(ngModel)]="dueTo" (change)="applyFilters()"/>
+              </label>
+              <label class="flex w-full justify-between">
+                Overdue
+                <input type="checkbox" class="w-4" [(ngModel)]="isOverdue" (change)="applyFilters()"/>
+              </label>
+            </div>
+          </app-dropdown-layout>
+        }
+      </div>
+    </div>
+    <section class="w-full flex flex-col justify-center px-24">
+      <table classs="min-w-full text-sm text-left mx-auto">
+        <thead class="text-sm border-b rounded-base border-default">
+          <tr>
+            <th class="px-6 py-3 text-left">TITLE</th>
+            <th class="px-6 py-3 text-left">DESCRIPTION</th>
+            <th class="px-6 py-3 text-left">STATUS</th>
+            <th class="px-6 py-3 text-left">PRIORITY</th>
+            <th class="px-6 py-3 text-left">DUE DATE</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (task of tasks(); track task.id) {
+            <tr class="border-b border-default text-left">
+              <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
+                {{ task.title }}
+              </th>
+              <td class="px-6 py-4">{{ task.description }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="rounded-sm px-2" [style.background-color]="task.status.color">
+                  {{ setStatusName(task.status.name) }}
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="rounded-sm px-2" [style.background-color]="setBgPriority(task.priority)">
+                  {{ task.priority }}
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span>{{ task.dueDate | date: 'dd/MM/yyyy' }}</span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td class="px-6 py-4 text-center" colspan="5">No tasks found</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+</div>

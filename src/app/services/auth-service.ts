@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {jwtDecode} from 'jwt-decode';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../types/U';
+import { LoginRequest, LoginResponse, RegisterRequest, UserResponse } from '../types/U';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(data: RegisterRequest) {
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/auth/register`, data);
+    return this.http.post<UserResponse>(`${this.apiUrl}/auth/register`, data);
   }
 
   login(data: LoginRequest) {

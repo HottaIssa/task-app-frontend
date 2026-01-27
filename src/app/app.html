@@ -1,4 +1,6 @@
-<app-header/>
+@if(authService.isAuthenticated()){
+  <app-header/>
+}
 <main class="h-full">
   <router-outlet/>
 </main>

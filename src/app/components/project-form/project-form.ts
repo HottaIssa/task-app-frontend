@@ -25,10 +25,10 @@ export class ProjectForm {
   });
 
   projectForm = form(this.projectModel, (schemaPath) => {
-    required(schemaPath.name, { message: 'Username is requiered' });
-    required(schemaPath.description, { message: 'Password is requiered' });
-    maxLength(schemaPath.name, 50, { message: 'Password must be at most 50 characters long' });
-    maxLength(schemaPath.description, 200, { message: 'Password must be at most 200 characters long' });
+    required(schemaPath.name, { message: 'Name is requiered' });
+    required(schemaPath.description, { message: 'Description is requiered' });
+    maxLength(schemaPath.name, 50, { message: 'Name must be at most 50 characters long' });
+    maxLength(schemaPath.description, 200, { message: 'Description must be at most 200 characters long' });
   });
 
   onSubmit(event: Event) {

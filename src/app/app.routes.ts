@@ -5,6 +5,7 @@ import { Home } from './pages/home/home'
 import { authGuard } from './guards/auth-guard';
 import { publicGuard } from './guards/public-guard';
 import { Project } from './pages/project/project';
+import { Tasks } from './pages/tasks/tasks';
 
 export const routes: Routes = [
   {
@@ -29,7 +30,19 @@ export const routes: Routes = [
     path: 'project/:id',
     title: 'Project Details | SaiDone',
     component: Project,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
+  },
+  {
+    path: 'tasks',
+    title: 'Tasks | SaiDone',
+    component: Tasks,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'profile:id',
+    title: 'Profile | SaiDone',
+    component: Tasks,
+    canActivate: [authGuard],
   },
   {
     path: '**',

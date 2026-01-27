@@ -1,10 +1,21 @@
-<button class="cursor-pointer hover:bg-black/20 rounded-lg p-1" (click)="openModal()">MEMBERS</button>
+<button class="button-nav" (click)="openModal()">MEMBERS</button>
 
 @if (isModalOpen()) {
   <app-modal-layout
     modalTitle="MEMBERS"
     (onClose)="isModalOpen.set(false)">
 
+    @if(role() == 'ADMIN'){
+      <form (submit)="onSubmit($event)" class="w-full flex justify-end gap-4">
+        <input type="text" placeholder="ID MEMBER TO ADD" [formField]="memberForm.userId">
+        <select title="Lista de roles" [formField]="memberForm.role" class="button-nav">
+          @for (role of roleList; track $index) {
+            <option value="{{role}}">{{role}}</option>
+          }
+        </select>
+        <button [disabled]="memberForm().invalid()" class="px-4! button-nav">Invite</button>
+      </form>
+    }
     <table classs="w-full text-sm text-left rtl:text-right text-body">
       <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default">
         <tr>

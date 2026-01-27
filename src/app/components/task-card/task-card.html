@@ -1,9 +1,12 @@
-<div class="grid bg-[#F6FAF9] grid-cols-[1fr_auto] grid-rows-[auto_1fr_auto] grid-flow-col rounded-xl p-3 gap-3">
-  <h4>{{ task().title }}</h4>
-  <p>{{ task().description }}</p>
-  <p>Assign to: <span>{{task().assignedTo.username}}</span></p>
-  <p class="justify-self-end">{{task().priority}}</p>
-  <div class="grid row-span-2 grid-cols-subgrid grid-rows-[1fr_auto] justify-self-end">
-    <p class="{{task().isOverdue ? 'text-red-500' : 'text-gray-500'}} row-start-2">{{task().dueDate | date: 'dd/MM/yy'}}</p>
+<div class="grid bg-white shadow-md grid-cols-[1fr_auto] grid-rows-[auto_auto] grid-flow-col rounded-xl p-3 gap-3">
+  <h4 class="font-semibold!">{{ task().title }}</h4>
+  <!-- <p>{{ task().description }}</p> -->
+  <p>Assign to: <span class="font-semibold">{{task().assignedTo.username}}</span></p>
+  <div>
+    <div class="flex {{colorMap[task().priority]}} px-2 py-1 rounded items-center gap-2">
+<svg class="w-3 h-3 fill-current" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z"></path> </g></svg>
+      <p class="font-semibold! justify-self-end self-center">{{task().priority}}</p>
+    </div>
   </div>
+  <p class="{{task().isOverdue ? 'text-red-600' : 'text-gray-500'}} row-start-2 font-semibold! justify-self-end">{{task().dueDate | date: 'dd/MM/yy'}}</p>
 </div>

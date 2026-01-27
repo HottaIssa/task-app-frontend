@@ -26,6 +26,14 @@ input, textarea {
   @apply border border-gray-300 rounded-lg p-2 bg-gray-200;
 }
 
+.form-filter > select,.form-filter > input,.form-filter > button {
+  @apply border border-gray-300 rounded-sm px-2 py-1 bg-gray-200;
+}
+
+.button-nav {
+  @apply cursor-pointer hover:bg-black/20 rounded-sm p-1;
+}
+
 :root {
   font-family:'Space Grotesk', serif;
 }
