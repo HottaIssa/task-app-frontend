@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { ProjectService } from '../../services/project-service';
 import { Tasks } from "./tasks/tasks";
 import { Members } from "../../components/members/members";
@@ -13,18 +12,23 @@ import { About } from '../../components/about/about';
   styles: ``,
 })
 export class Project implements OnInit {
-  project = signal<TaskProject>({} as TaskProject);
-  projectId: string | null = '';
-  private route = inject(ActivatedRoute);
+  project = signal<TaskProject>({
+    columns: [],
+    project: {
+      id: '',
+      name: '',
+      totalTasks: 0,
+      completeTasks: 0,
+      roleMember: '',
+    },
+  });
+  @Input('id') projectId: string = '';
   private projectService = inject(ProjectService);
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      this.projectId = params.get('id');
       if (this.projectId) {
         this.loadData(this.projectId);
-      }
-    });
+    };
   }
 
   loadData(id: string) {

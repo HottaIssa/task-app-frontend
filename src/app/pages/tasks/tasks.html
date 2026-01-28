@@ -1,36 +1,36 @@
-<div class="w-full mt-8">
-    <div class="flex w-full items-center justify-between px-24 relative">
+<div class="w-full flex flex-col gap-4 h-full pt-8 pb-16">
+    <div class="flex flex-wrap w-full items-center justify-center md:justify-between px-8 lg:px-24 relative gap-2">
       <div class="flex items-center">
         <button
           class="{{
             isActive === '1' ? 'bg-emerald-400 text-white' : ''
-          }} border border-gray-200 px-2 rounded-xs"
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
           (click)="setActive('1')"
         >
-          ALL
+          All
         </button>
         <button
           class="{{
             isActive === '2' ? 'bg-emerald-400 text-white' : ''
-          }} border border-gray-200 px-2 rounded-xs"
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
           (click)="setActive('2')"
         >
-          ASSIGNED TO ME
+          Assigned to me
         </button>
         <button
           class="{{
             isActive === '3' ? 'bg-emerald-400 text-white' : ''
-          }} border border-gray-200 px-2 rounded-xs"
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
           (click)="setActive('3')"
         >
-          CREATED BY ME
+          Created by me
         </button>
 
       </div>
       <div class="flex items-center gap-4">
           <input type="text" placeholder="Title or Description" [(ngModel)]="searchText"
       (keyup.enter)="search()" />
-      <button (click)="search()" class="button-nav p-2!">🔍 Buscar</button>
+      <button (click)="search()" class="button-nav p-2! border!">Buscar</button>
         <button (click)="isModalOpen.set(true)" class="button-nav {{isModalOpen() ? 'bg-emerald-400 text-white' : ''}}">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -48,8 +48,8 @@
           </svg>
         </button>
         @if (isModalOpen()) {
-          <app-dropdown-layout (onClose)="isModalOpen.set(false)" class="absolute right-2">
-            <div class="flex flex-col gap-2 form-filter">
+          <app-dropdown-layout (onClose)="isModalOpen.set(false)" class="absolute right-2 top-20 md:top-12">
+            <div class="flex flex-col gap-2 form-filter w-64">
               <select [(ngModel)]="selectedStatus" title="List status" (change)="applyFilters()">
                 <option value="">All Status</option>
                 <option value="TODO">Todo</option>
@@ -63,15 +63,15 @@
                 <option value="MEDIUM">Medium</option>
                 <option value="HIGH">High</option>
               </select>
-              <label for="">
+              <label class="flex flex-col">
                 From:
-                <input type="datetime-local" [(ngModel)]="dueFrom" (change)="applyFilters()"/>
+                <input type="datetime-local" [(ngModel)]="dueFrom" (change)="applyFilters()" class="bg-white!"/>
               </label>
-              <label>
+              <label class="flex flex-col">
                 To:
-                <input type="datetime-local" [(ngModel)]="dueTo" (change)="applyFilters()"/>
+                <input type="datetime-local" [(ngModel)]="dueTo" (change)="applyFilters()" class="bg-white!"/>
               </label>
-              <label class="flex w-full justify-between">
+              <label class="flex justify-between">
                 Overdue
                 <input type="checkbox" class="w-4" [(ngModel)]="isOverdue" (change)="applyFilters()"/>
               </label>
@@ -80,7 +80,7 @@
         }
       </div>
     </div>
-    <section class="w-full flex flex-col justify-center px-24">
+    <section class="w-full flex lg:justify-center px-8 lg:px-24 overflow-scroll pb-2">
       <table classs="min-w-full text-sm text-left mx-auto">
         <thead class="text-sm border-b rounded-base border-default">
           <tr>

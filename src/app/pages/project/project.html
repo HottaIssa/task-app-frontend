@@ -1,12 +1,10 @@
-<div class="grid grid-rows-[auto_1fr] w-full h-full">
-  <div class="w-full flex justify-between px-9 py-2">
-    <h3>{{project().project.name}}</h3>
-    <nav class="flex gap-3">
-      <app-members [projectId]="project().project.id" [role]="project().project.roleMember"></app-members>
-      <app-about [projectId]="project().project.id" [role]="project().project.roleMember"></app-about>
+<div class="grid grid-rows-[auto_1fr] grid-cols-1 h-full max-w-full">
+  <div class=" flex justify-between px-9 py-2 w-full shadow-md max-w-full gap-2">
+    <h3 class="truncate">{{project().project.name}}</h3>
+    <nav class="flex gap-3 items-center">
+      <app-members [projectId]="projectId" [role]="project().project.roleMember"></app-members>
+      <app-about [projectId]="projectId" [role]="project().project.roleMember"></app-about>
     </nav>
   </div>
-  <div class="">
-    <app-tasks [columns]="project().columns"></app-tasks>
-  </div>
+  <app-tasks [columns]="project().columns"></app-tasks>
 </div>

@@ -1,12 +1,12 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { ProjectService } from '../../services/project-service';
-import { ModalLayout } from "../modal-layout/modal-layout";
 import { Project } from '../../types/U';
 import { DatePipe } from '@angular/common';
+import { DropdownLayout } from "../dropdown-layout/dropdown-layout";
 
 @Component({
   selector: 'app-about',
-  imports: [ModalLayout, DatePipe],
+  imports: [DatePipe, DropdownLayout],
   templateUrl: './about.html',
   styles: ``,
 })

@@ -56,6 +56,7 @@ export class Tasks implements OnInit {
   }
 
   setActive(option: string) {
+    this.clearFilters()
     this.isActive = option;
     if (option === '2') {
       this.filters = {
@@ -113,6 +114,15 @@ export class Tasks implements OnInit {
       relativeTo: this.route,
       queryParams: newFilters,
     });
+  }
+
+  clearFilters() {
+    this.selectedStatus= '';
+    this.selectedPriority= '';
+    this.searchText= '';
+    this.dueFrom= '';
+    this.dueTo= '';
+    this.isOverdue = false;
   }
 
   loadData(filters: TaskFilters) {

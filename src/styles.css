@@ -23,11 +23,11 @@ p {
 }
 
 input, textarea {
-  @apply border border-gray-300 rounded-lg p-2 bg-gray-200;
+  @apply border border-gray-300 rounded-sm p-2 bg-gray-200;
 }
 
 .form-filter > select,.form-filter > input,.form-filter > button {
-  @apply border border-gray-300 rounded-sm px-2 py-1 bg-gray-200;
+  @apply border border-gray-300 rounded-sm px-2 py-1 bg-white;
 }
 
 .button-nav {
@@ -42,4 +42,5 @@ app-root{
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 }
