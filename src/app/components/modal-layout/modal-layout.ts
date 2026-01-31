@@ -7,6 +7,6 @@ import { Component, input, output } from '@angular/core';
   styles: ``,
 })
 export class ModalLayout {
-  modalTitle = input<string>('Titulo del modal');
+  modalTitle = input<string>();
   onClose = output<void>();
 }

@@ -1,27 +1,35 @@
-import { Component, inject, input, signal } from '@angular/core';
-import { ModalLayout } from '../modal-layout/modal-layout';
-import { Member, MemberRequest, roleMember } from '../../types/U';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Member, MemberRequest } from '../../types/U';
 import { ProjectService } from '../../services/project-service';
 import { DatePipe } from '@angular/common';
 import { form, required, FormField } from '@angular/forms/signals';
+import { ActivatedRoute } from '@angular/router';
+import { ProjectContextService } from '../../services/project-context-service';
 
 @Component({
   selector: 'app-members',
-  imports: [ModalLayout, DatePipe, FormField],
+  imports: [DatePipe, FormField],
   templateUrl: './members.html',
   styles: ``,
 })
-export class Members {
-  isModalOpen = signal(false);
-  projectId = input.required<string>();
-  role = input.required<string>();
+export class Members implements OnInit {
+  projectId = signal('');
+  authProject = inject(ProjectContextService);
+  route = inject(ActivatedRoute);
   memberModel = signal<MemberRequest>({ userId: '', role: 'MEMBER' });
   members = signal<Member[]>([]);
   roleList = ['MEMBER', 'ADMIN', 'VIEWER'];
   private projectService = inject(ProjectService);
 
-  openModal() {
-    this.isModalOpen.set(true);
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.projectId.set(params.get('id') ?? '');
+      if (!this.projectId) return;
+      this.loadData();
+    });
+  }
+
+  loadData() {
     this.projectService.getMembersByProject(this.projectId()).subscribe({
       next: (data) => {
         this.members.set(data);
@@ -40,6 +48,7 @@ export class Members {
     event.preventDefault();
     this.projectService.addMember(this.projectId(), this.memberModel()).subscribe({
       next: (data) => {
+        console.log(data);
         this.members.set([...this.members(), data]);
       },
       error: (error) => {

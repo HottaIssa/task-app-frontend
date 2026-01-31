@@ -1,10 +1,55 @@
-<div class="grid grid-rows-[auto_1fr] grid-cols-1 h-full max-w-full">
-  <div class=" flex justify-between px-9 py-2 w-full shadow-md max-w-full gap-2">
-    <h3 class="truncate">{{project().project.name}}</h3>
+<div class="flex flex-col w-full overflow-hidden h-full">
+  <div class="flex justify-between px-9 py-2 w-full shadow-md gap-2">
+    <h3 class="truncate">{{ project().project.name }}</h3>
     <nav class="flex gap-3 items-center">
-      <app-members [projectId]="projectId" [role]="project().project.roleMember"></app-members>
-      <app-about [projectId]="projectId" [role]="project().project.roleMember"></app-about>
+      <button class="button-nav flex items-center gap-1" (click)="isMemberOpen.set(true)">
+        <span class="hidden sm:block"> Members </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+          />
+        </svg>
+      </button>
+      <button class="button-nav flex items-center gap-1" (click)="isAboutOpen.set(true)">
+        <span class="hidden sm:block">About</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+          />
+        </svg>
+      </button>
     </nav>
   </div>
-  <app-tasks [columns]="project().columns"></app-tasks>
+  <div class="flex-1 overflow-hidden">
+    <app-tasks [columns]="project().columns"></app-tasks>
+  </div>
+  @if (isMemberOpen()) {
+    <app-modal-layout modalTitle="MEMBERS" (onClose)="isMemberOpen.set(false)" class="">
+      <app-members></app-members>
+    </app-modal-layout>
+  }
+  @if (isAboutOpen()) {
+    <app-dropdown-layout (onClose)="isAboutOpen.set(false)" class="absolute top-26 right-2">
+      <app-about></app-about>
+    </app-dropdown-layout>
+  }
+  <router-outlet></router-outlet>
 </div>

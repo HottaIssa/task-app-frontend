@@ -1,15 +1,22 @@
 <div class="w-full flex flex-col items-center h-full pb-12 pt-2">
   <div class="w-full flex justify-between px-8 shadow-md pb-2 align-center">
     <h2>Workspaces</h2>
-    <app-project-form></app-project-form>
+    <button class="button-nav" (click)="isProjectFormOpen.set(true)">Create Project</button>
   </div>
-  <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full overflow-y-auto px-4 py-8">
+  <div
+    class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full overflow-y-auto px-4 py-8"
+  >
     @for (project of projects(); track project.id) {
-      <app-project-card [project]="project"/>
-    }@empty {
+      <app-project-card [project]="project" />
+    } @empty {
       <div class="col-span-4">
         <p>No projects found.</p>
       </div>
     }
   </div>
+   @if (isProjectFormOpen()) {
+      <app-modal-layout modalTitle="Create Project" (onClose)="isProjectFormOpen.set(false)">
+        <app-project-form></app-project-form>
+      </app-modal-layout>
+    }
 </div>

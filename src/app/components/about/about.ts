@@ -1,25 +1,31 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { ProjectService } from '../../services/project-service';
 import { Project } from '../../types/U';
 import { DatePipe } from '@angular/common';
-import { DropdownLayout } from "../dropdown-layout/dropdown-layout";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-about',
-  imports: [DatePipe, DropdownLayout],
+  imports: [DatePipe],
   templateUrl: './about.html',
   styles: ``,
 })
-export class About {
-  isModalOpen = signal(false);
-  projectId = input.required<string>();
-  role = input.required<string>();
+export class About implements OnInit {
+  projectId = signal('');
+  route = inject(ActivatedRoute);
   project = signal<Project>({} as Project);
   private projectService = inject(ProjectService);
 
-  openModal(){
-    this.isModalOpen.set(true);
-    this.projectService.getProject(this.projectId()).subscribe({
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      this.projectId.set(params.get('id') ?? '');
+      if (!this.projectId) return;
+      this.loadData(this.projectId());
+    });
+  }
+
+  loadData(id: string) {
+    this.projectService.getProject(id).subscribe({
       next: (data) => {
         this.project.set(data);
       },

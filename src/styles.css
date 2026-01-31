@@ -36,11 +36,12 @@ input, textarea {
 
 :root {
   font-family:'Space Grotesk', serif;
+  scrollbar-color: #c0c0c0 #ffffff;
 }
 
 app-root{
-  display: flex;
-  flex-direction: column;
   height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }

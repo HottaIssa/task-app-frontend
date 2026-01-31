@@ -1,37 +1,39 @@
-<button class="button-nav" (click)="isModalOpen.set(true)">Create Project</button>
-
-@if (isModalOpen()) {
-  <app-modal-layout
-    modalTitle="Create Project"
-    (onClose)="isModalOpen.set(false)">
-
-    <form (submit)="onSubmit($event)" class="flex flex-col gap-4 ">
-      <input placeholder="Name of project" type="text" id="name" [formField]="projectForm.name">
-      @if (projectForm.name().touched() && projectForm.name().invalid()) {
-          <ul class="error-list">
-            @for (error of projectForm.name().errors(); track error.message) {
-              <li class="text-red-500">{{ error.message }}</li>
-            }
-          </ul>
-        }
-      <textarea cols="30" rows="10" placeholder="Description" [formField]="projectForm.description"></textarea>
-      @if (projectForm.description().touched() && projectForm.description().invalid()) {
-          <ul class="error-list">
-            @for (error of projectForm.description().errors(); track error.message) {
-              <li class="text-red-500">{{ error.message }}</li>
-            }
-          </ul>
-        }
-      <div class="flex flex-wrap gap-2 justify-center">
-        <label for="">Start Date:
-          <input type="date" [formField]="projectForm.startDate">
-        </label>
-        <label for="">End Date:
-          <input type="date"[formField]="projectForm.endDate">
-        </label>
-      </div>
-      <button class="border border-gray-300 rounded-lg py-1 cursor-pointer" [disabled]="projectForm().invalid()">Create</button>
-    </form>
-
-  </app-modal-layout>
-}
+<form (submit)="onSubmit($event)" class="flex flex-col gap-4 px-8 py-4">
+  <input placeholder="Name of project" type="text" id="name" [formField]="projectForm.name" />
+  @if (projectForm.name().touched() && projectForm.name().invalid()) {
+    <ul class="error-list">
+      @for (error of projectForm.name().errors(); track error.message) {
+        <li class="text-red-500">{{ error.message }}</li>
+      }
+    </ul>
+  }
+  <textarea
+    cols="30"
+    rows="10"
+    placeholder="Description"
+    [formField]="projectForm.description"
+  ></textarea>
+  @if (projectForm.description().touched() && projectForm.description().invalid()) {
+    <ul class="error-list">
+      @for (error of projectForm.description().errors(); track error.message) {
+        <li class="text-red-500">{{ error.message }}</li>
+      }
+    </ul>
+  }
+  <div class="flex flex-wrap gap-2 justify-center">
+    <label for=""
+      >Start Date:
+      <input type="date" [formField]="projectForm.startDate" />
+    </label>
+    <label for=""
+      >End Date:
+      <input type="date" [formField]="projectForm.endDate" />
+    </label>
+  </div>
+  <button
+    class="border border-gray-300 rounded-lg py-1 cursor-pointer"
+    [disabled]="projectForm().invalid()"
+  >
+    Create
+  </button>
+</form>

@@ -6,6 +6,9 @@ import { authGuard } from './guards/auth-guard';
 import { publicGuard } from './guards/public-guard';
 import { Project } from './pages/project/project';
 import { Tasks } from './pages/tasks/tasks';
+import { Profile } from './components/profile/profile';
+import { TaskCard } from './components/task-card/task-card';
+import { TaskInfo } from './components/task-info/task-info';
 
 export const routes: Routes = [
   {
@@ -31,16 +34,16 @@ export const routes: Routes = [
     title: 'Project Details | SaiDone',
     component: Project,
     canActivate: [authGuard],
+    children: [
+      {
+        path: 'task/:id',
+        component: TaskInfo
+      }
+    ]
   },
   {
     path: 'tasks',
     title: 'Tasks | SaiDone',
-    component: Tasks,
-    canActivate: [authGuard],
-  },
-  {
-    path: 'profile:id',
-    title: 'Profile | SaiDone',
     component: Tasks,
     canActivate: [authGuard],
   },

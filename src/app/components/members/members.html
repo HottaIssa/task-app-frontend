@@ -1,59 +1,53 @@
-<button class="button-nav flex items-center gap-1" (click)="openModal()">
-  <span class="hidden sm:block">
-    Members
-  </span>
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-</svg>
-
-</button>
-
-@if (isModalOpen()) {
-  <app-modal-layout
-    modalTitle="MEMBERS"
-    (onClose)="isModalOpen.set(false)">
-
-    @if(role() == 'ADMIN'){
-      <form (submit)="onSubmit($event)" class="flex flex-wrap justify-end gap-4 w-full">
-        <div class="flex gap-4 w-full sm:w-auto justify-end sm:justify-baseline">
-        <input type="text" placeholder="ID MEMBER TO ADD" [formField]="memberForm.userId" class="sm:w-auto! w-full!">
-          <select title="Lista de roles" [formField]="memberForm.role" class="button-nav">
-            @for (role of roleList; track $index) {
-              <option value="{{role}}">{{role}}</option>
-            }
-          </select>
-        </div>
-          <button [disabled]="memberForm().invalid()" class="px-4! button-nav border!">Invite</button>
-      </form>
-    }
-    <div class="w-full overflow-auto">
-      <table classs="text-sm text-left rtl:text-right text-body">
-        <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default">
-          <tr>
-            <th class="px-6 py-3">USERNAME</th>
-            <th class="px-6 py-3">FULL NAME</th>
-            <th class="px-6 py-3">EMAIL</th>
-            <th class="px-6 py-3">ROL</th>
-            <th class="px-6 py-3">JOINED AT</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (member of members(); track member.id){
+<section class="w-auto lg:w-full">
+  @if (authProject.isProjectAdmin()) {
+    <form (submit)="onSubmit($event)" class="flex flex-wrap justify-end gap-4 w-full px-8 py-2">
+      <div class="flex gap-4 w-full sm:w-auto justify-end sm:justify-baseline">
+        <input
+          type="text"
+          placeholder="ID MEMBER TO ADD"
+          [formField]="memberForm.userId"
+          class="sm:w-auto! w-full!"
+        />
+        <select title="Lista de roles" [formField]="memberForm.role" class="button-nav">
+          @for (role of roleList; track $index) {
+            <option value="{{ role }}">{{ role }}</option>
+          }
+        </select>
+      </div>
+      <button [disabled]="memberForm().invalid()" class="px-4! button-nav border!">Invite</button>
+    </form>
+  }
+  <div class="w-180 lg:w-full overflow-auto px-8 py-4">
+    <table classs="text-sm text-left rtl:text-right text-body">
+      <thead
+        class="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default"
+      >
+        <tr>
+          <th class="px-6 py-3">USERNAME</th>
+          <th class="px-6 py-3">FULL NAME</th>
+          <th class="px-6 py-3">EMAIL</th>
+          <th class="px-6 py-3">ROL</th>
+          <th class="px-6 py-3">JOINED AT</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (member of members(); track member.id) {
           <tr class="bg-neutral-primary border-b border-default">
             <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
               <div>
-                <img src=`{{member.user.avatar_url}}` alt="">
-                <span>{{member.user.username}}</span>
+                <img src="`{{ member.user.avatar_url }}`" alt="" />
+                <span>{{ member.user.username }}</span>
               </div>
             </th>
-            <td class="px-6 py-4">{{member.user.firstName}} {{member.user.lastName}}</td>
-            <td class="px-6 py-4">{{member.user.email}}</td>
-            <td class="px-6 py-4">{{member.roleMember}}</td>
-            <td class="px-6 py-4"><span>{{member.joinedAt | date: "dd/MM/yyyy"}}</span></td>
-          </tr>}
-        </tbody>
-      </table>
-    </div>
-
-  </app-modal-layout>
-}
+            <td class="px-6 py-4 whitespace-nowrap">{{ member.user.fullName }}</td>
+            <td class="px-6 py-4">{{ member.user.email }}</td>
+            <td class="px-6 py-4">{{ member.roleMember }}</td>
+            <td class="px-6 py-4">
+              <span>{{ member.joinedAt | date: 'dd/MM/yyyy' }}</span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

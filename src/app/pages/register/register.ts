@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/cor
 import { Router } from '@angular/router';
 import { form, FormField, required, submit, email, minLength, maxLength } from '@angular/forms/signals';
 import { AuthService } from '../../services/auth-service';
-import { RegisterData } from '../../types/U';
+import { RegisterRequest } from '../../types/U';
 
 @Component({
   selector: 'app-register',
@@ -11,7 +11,7 @@ import { RegisterData } from '../../types/U';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Register {
-  registerModel = signal<RegisterData>({
+  registerModel = signal<RegisterRequest>({
     username: '',
     password: '',
     email: '',
@@ -39,7 +39,6 @@ export class Register {
       const credentials = this.registerModel();
       this.authService.register(credentials).subscribe({
         next: (response) => {
-          console.log('Registration successful', response);
           this.router.navigate(['/login']);
         },
         error: (error) => {

@@ -1,0 +1,68 @@
+@if (task(); as t) {
+  <app-modal-layout
+    modalTitle="{{setStatusName(t.status.name)}}"
+    (onClose)="taskInfoClosed()"
+  >
+    <div
+      class="flex md:divide-x md:flex-row divide-y md:divide-y-0 flex-col divide-gray-200 h-full max-h-full overflow-y-auto md:overflow-hidden"
+    >
+      <section class="flex flex-col px-8 py-4 md:min-w-84 lg:min-w-104 gap-2">
+        <div class="flex gap-2">
+          <h3>{{ t.title }}</h3>
+          <div class="flex {{ colorMap[t.priority] }} px-2 py-1 rounded items-center gap-2">
+            <svg
+              class="w-3 h-3 fill-current"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z"
+                ></path>
+              </g>
+            </svg>
+            <p class="font-semibold! justify-self-end self-center">{{ t.priority }}</p>
+          </div>
+        </div>
+        <div class="w-full flex justify-between gap-4">
+          <div class="text-xs flex gap-1">
+            <span class="font-light"> Created: </span>
+            {{ t.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+          </div>
+          <div class="text-xs flex gap-1">
+            <span class="font-light"> Modified: </span>
+            {{ t.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
+          </div>
+        </div>
+        <div class="flex flex-col min-h-24">
+          <span>Descritpion</span>
+          <p>{{ t.description }}</p>
+        </div>
+        <div class="flex gap-2">
+          <span>Created By:</span>
+          <div class="flex rounded-lg px-2 bg-gray-400 py-1 gap-2 items-center">
+            <div class="max-w-8">
+              <img
+                src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
+                alt=""
+              />
+            </div>
+            <div class="flex flex-col">
+              <span>{{ t.createdBy.username }}</span>
+              <span class="text-sm text-gray-600 font-light">{{ t.createdBy.email }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="flex flex-col gap-2 px-8 py-4 max-w-96 max-h-full md:overflow-y-auto">
+        <h2>Comments</h2>
+        <app-comment-chat></app-comment-chat>
+      </section>
+    </div>
+  </app-modal-layout>
+}

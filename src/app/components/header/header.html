@@ -25,13 +25,13 @@
     </defs>
   </svg>
 
-  <nav class="sm:flex gap-12 hidden">
+  <nav class="sm:flex gap-12 hidden align-center">
     <a href="/projects">Projects</a>
     <a href="/tasks">Tasks</a>
-    <a href="/me">Profile</a>
+    <button class="cursor-pointer text-left" (click)="openProfile()">Profile</button>
     <a (click)="Logout()" href="/login">Log out</a>
   </nav>
-  <button class="sm:hidden" (click)="isModalOpen.set(true)">
+  <button class="sm:hidden" (click)="isMenuOpen.set(true)">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -47,14 +47,19 @@
       />
     </svg>
   </button>
-  @if (isModalOpen()) {
-    <app-dropdown-layout (onClose)="isModalOpen.set(false)" class="absolute right-4 top-14">
+  @if (isMenuOpen()) {
+    <app-dropdown-layout (onClose)="isMenuOpen.set(false)" class="absolute right-4 top-14">
       <nav class="flex flex-col gap-4 px-4 text-black">
         <a href="/projects">Projects</a>
         <a href="/tasks">Tasks</a>
-        <a href="/me">Profile</a>
+        <button class="cursor-pointer text-left" (click)="openProfile()">Profile</button>
         <a (click)="Logout()" href="/login">Log out</a>
       </nav>
+    </app-dropdown-layout>
+  }
+  @if (isProfileOpen()) {
+    <app-dropdown-layout (onClose)="isProfileOpen.set(false)" class="absolute right-4 top-14">
+      <app-profile></app-profile>
     </app-dropdown-layout>
   }
 </header>

@@ -1,0 +1,20 @@
+<div class="bg-white shadow-md rounded-lg p-2" (onClickOutside)="onClose.emit()">
+  <form class="flex flex-col gap-2">
+    <input [(ngModel)]="title" class="bg-white!" placeholder="Title" type="text" name="title"/>
+    <textarea [(ngModel)]="description" class="bg-white!" placeholder="Description" name="description"></textarea>
+    <div class="flex w-full justify-around">
+      <label class="flex gap-1 align-center has-checked:bg-[#DCFCE7] has-checked:text-[#22C55E] has-checked:ring-indigo-200 rounded-sm px-2 py-1"
+        >Low
+        <input [(ngModel)]="priority" title="Low" type="radio" name="priority" value="LOW" class="checked:border-indigo-500 cursor-pointer"/>
+      </label>
+      <label class="flex gap-1 align-center has-checked:bg-[#FEF9C3] has-checked:text-[#EAB308] has-checked:ring-indigo-200 rounded-sm px-2 py-1"
+        >Medium
+        <input [(ngModel)]="priority" title="Medium" type="radio" name="priority" value="MEDIUM" class="checked:border-indigo-500 cursor-pointer"/>
+      </label>
+      <label class="flex gap-1 align-center has-checked:bg-[#FEE2E2] has-checked:text-[#EF4444] has-checked:ring-indigo-200 rounded-sm px-2 py-1"
+        >High
+        <input [(ngModel)]="priority" title="High" type="radio" name="priority" value="HIGH" class="checked:border-indigo-500 cursor-pointer"/>
+      </label>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,68 @@
+<div class="flex gap-2">
+  <div class="max-w-8">
+    <img
+      src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
+      alt=""
+    />
+  </div>
+  <div class="flex flex-col w-full gap-2">
+    <div class="flex gap-2 items-center">
+      <span>{{ commentLocal().member.user.fullName }}</span>
+      <span class="text-xs font-light">{{ commentLocal().timeAgo }}</span>
+    </div>
+    @if (isEditing()) {
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex gap-2">
+          <textarea
+            [(ngModel)]="content"
+            class="w-full text-sm flex-1"
+            placeholder="Type your comment"
+            type="text"
+            rows="4"
+            (keyup.enter)="updateComment()"
+          ></textarea>
+          <button
+            class="cursor-pointer p-2 border border-gray-200 rounded-sm hover:bg-gray-100 self-start"
+            (click)="updateComment()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+              />
+            </svg>
+          </button>
+        </div>
+        <button
+          class="cursor-pointer p-2 border border-gray-200 rounded-sm hover:bg-gray-100 self-end"
+          (click)="cancelEditing()"
+        >
+          Cancel edit
+        </button>
+      </div>
+    } @else {
+      <div class="p-2 bg-gray-200 w-fit rounded-sm">
+        <p class="w-fit!">
+          {{ commentLocal().content }}
+        </p>
+      </div>
+      @if (auth.getId() === commentLocal().member.user.id || authProject.isProjectAdmin()) {
+        <div class="flex text-xs font-light gap-2">
+          @if (auth.getId() === commentLocal().member.user.id) {
+            <button class="cursor-pointer underline" (click)="startEdit()">Edit</button>
+            <div class="font-bold text-md">·</div>
+          }
+          <button class="cursor-pointer underline" (click)="onDeleteClick()">Delete</button>
+        </div>
+      }
+    }
+  </div>
+</div>

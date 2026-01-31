@@ -33,7 +33,6 @@ export class Login {
 
       this.authService.login(credentials).subscribe({
         next: (response) => {
-          console.log('Login successful', response);
           this.authService.saveToken(response.token);
           this.router.navigate(['/']);
         },

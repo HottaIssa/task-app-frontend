@@ -1,15 +1,21 @@
-<div class="fixed top-0 left-0 w-full h-full bg-black/50 flex sm:justify-center items-center z-10 p-2">
-  <div class="bg-white rounded-lg shadow-lg shadow-black/20 p-8 flex flex-col w-full md:w-auto">
-    <header class="flex justify-between items-center border-b border-[#eee] mb-4 pb-1">
-      <h3>{{modalTitle()}}</h3>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-2">
+  <div
+    class="absolute inset-0 bg-black/40"
+    (click)="onClose.emit()"
+  ></div>
+  <div
+    class="relative bg-white rounded-lg shadow-lg shadow-black/20 flex flex-col w-full md:w-auto max-h-[90dvh] md:max-h-[80dvh]"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="flex justify-between items-center border-b border-[#eee] px-4 py-2 shrink-0">
+      <h3>{{ modalTitle() }}</h3>
       <button class="text-2xl button-nav" (click)="onClose.emit()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
         </svg>
       </button>
     </header>
-    <section>
       <ng-content></ng-content>
-    </section>
   </div>
 </div>

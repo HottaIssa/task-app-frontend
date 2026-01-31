@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { TaskCardResponse } from '../../types/U';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-card',
@@ -10,6 +11,16 @@ import { TaskCardResponse } from '../../types/U';
 })
 export class TaskCard {
   task = input.required<TaskCardResponse>();
+  isTaskInfoOpen = signal(false);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
+
+  openTaskInfo(){
+    this.isTaskInfoOpen.set(true);
+    this.router.navigate(['task', this.task().id], {
+      relativeTo: this.route,
+    });
+  }
 
   readonly colorMap: Record<string, string> = {
     High: 'bg-[#FEE2E2] text-[#EF4444]',

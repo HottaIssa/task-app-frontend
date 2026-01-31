@@ -5,7 +5,7 @@ export interface TaskProject {
     name: string;
     totalTasks: number;
     completeTasks: number;
-    roleMember: string;
+    roleMember: roleMember;
   };
 }
 
@@ -30,7 +30,22 @@ export interface TaskCardResponse {
     id: string;
     username: string;
     email: string;
-  };
+    avatar_url: string |null;
+  } | null;
+}
+
+export interface TaskSimpleResponse {
+  id: string;
+  title: string;
+  priority: string;
+  dueDate: Date;
+  isOverdue: boolean;
+  assignedTo: {
+    id: string;
+    username: string;
+    email: string;
+    avatar_url: string |null;
+  } | null;
 }
 
 export interface ProjectResponse {
@@ -48,16 +63,16 @@ export interface Member {
   user: UserResponse;
   roleMember: string;
   joinedAt: Date;
+  isActive: boolean;
 }
 
 export interface UserResponse {
   id: string;
   username: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   role: string;
-  avatar_url: null;
+  avatar_url: string | null;
 }
 
 export interface RegisterRequest {
@@ -83,12 +98,12 @@ export interface LoginData {
 }
 
 
-export interface RegisterData {
+export interface UserSimpleResponse {
+  id: string;
   username: string;
-  password: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
+  avatar_url: string | null;
 }
 
 export interface Project {
@@ -113,13 +128,12 @@ export interface MemberRequest {
   role: roleMember;
 }
 
-export interface TaskResponse {
-  id: string;
+export interface TaskRequest {
   title: string;
   description: string;
+  projectId: string;
   status: string;
   priority: string;
-  dueDate: string;
 }
 
 export interface TaskFilters {
@@ -152,6 +166,45 @@ export interface Status {
   name: string;
   color: string;
   orderIndex: number;
+}
+
+export interface ProjectMembership {
+  projectId: string;
+  role: roleMember;
+}
+
+export interface TaskResponse {
+  id: string;
+  title: string;
+  description: string;
+  projectId: string;
+  projectName: string;
+  assignedTo: {
+    id: string;
+    username: string;
+    email: string;
+    avatar_url: string |null;
+  } | null;
+  status: Status;
+  priority: string;
+  dueDate: Date | null;
+  isOverdue: boolean;
+  actualHours: number;
+  createdBy: UserSimpleResponse;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CommentResponse {
+  id: string;
+  member: Member;
+  content: string;
+  timeAgo: string;
+  isEdited: boolean;
+}
+
+export interface CommentRequest {
+  content: string;
 }
 
 export type roleMember = 'MEMBER' | 'ADMIN' | 'VIEWER';
