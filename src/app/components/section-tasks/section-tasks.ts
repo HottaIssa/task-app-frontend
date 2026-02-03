@@ -22,7 +22,7 @@ export class SectionTasks {
 
   setColumnName(name: string) {
     if (name == 'TODO') {
-      this.columnName = 'Backlog';
+      this.columnName = 'Todo';
     } else if (name == 'IN_PROGRESS') {
       this.columnName = 'In Progress';
     } else if (name == 'IN_REVIEW') {

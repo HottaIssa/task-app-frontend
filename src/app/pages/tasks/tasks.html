@@ -1,37 +1,20 @@
-<div class="w-full flex flex-col gap-4 h-full pt-8 pb-16">
-    <div class="flex flex-wrap w-full items-center justify-center md:justify-between px-8 lg:px-24 relative gap-2">
-      <div class="flex items-center">
+<div class="w-full flex justify-center gap-4 h-full pt-8 pb-16 px-8">
+  <div class="flex flex-col w-full md:w-auto">
+    <div class="flex flex-wrap justify-between w-full relative gap-2">
+        <div class="flex gap-2 w-full md:w-96">
+          <input
+          class="flex-1! px-2 py-1 border border-gray-300"
+            type="text"
+            placeholder="Title or Description"
+            [(ngModel)]="searchText"
+            (keyup.enter)="search()"
+          />
+          <button (click)="search()" class="button-nav border!">Buscar</button>
+        </div>
         <button
-          class="{{
-            isActive === '1' ? 'bg-emerald-400 text-white' : ''
-          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
-          (click)="setActive('1')"
+          (click)="isModalOpen.set(true)"
+          class="button-nav order-3! h-fit self-center {{ isModalOpen() ? 'bg-emerald-400 text-white' : '' }}"
         >
-          All
-        </button>
-        <button
-          class="{{
-            isActive === '2' ? 'bg-emerald-400 text-white' : ''
-          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
-          (click)="setActive('2')"
-        >
-          Assigned to me
-        </button>
-        <button
-          class="{{
-            isActive === '3' ? 'bg-emerald-400 text-white' : ''
-          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
-          (click)="setActive('3')"
-        >
-          Created by me
-        </button>
-
-      </div>
-      <div class="flex items-center gap-4">
-          <input type="text" placeholder="Title or Description" [(ngModel)]="searchText"
-      (keyup.enter)="search()" />
-      <button (click)="search()" class="button-nav p-2! border!">Buscar</button>
-        <button (click)="isModalOpen.set(true)" class="button-nav {{isModalOpen() ? 'bg-emerald-400 text-white' : ''}}">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -48,7 +31,10 @@
           </svg>
         </button>
         @if (isModalOpen()) {
-          <app-dropdown-layout (onClose)="isModalOpen.set(false)" class="absolute right-2 top-20 md:top-12">
+          <app-dropdown-layout
+            (onClose)="isModalOpen.set(false)"
+            class="absolute -bottom-2 right-0"
+          >
             <div class="flex flex-col gap-2 form-filter w-64">
               <select [(ngModel)]="selectedStatus" title="List status" (change)="applyFilters()">
                 <option value="">All Status</option>
@@ -65,22 +51,62 @@
               </select>
               <label class="flex flex-col">
                 From:
-                <input type="datetime-local" [(ngModel)]="dueFrom" (change)="applyFilters()" class="bg-white!"/>
+                <input
+                  type="datetime-local"
+                  [(ngModel)]="dueFrom"
+                  (change)="applyFilters()"
+                  class="bg-white! px-2 py-1"
+                />
               </label>
               <label class="flex flex-col">
                 To:
-                <input type="datetime-local" [(ngModel)]="dueTo" (change)="applyFilters()" class="bg-white!"/>
+                <input
+                  type="datetime-local"
+                  [(ngModel)]="dueTo"
+                  (change)="applyFilters()"
+                  class="bg-white! px-2 py-1"
+                />
               </label>
               <label class="flex justify-between">
                 Overdue
-                <input type="checkbox" class="w-4" [(ngModel)]="isOverdue" (change)="applyFilters()"/>
+                <input
+                  type="checkbox"
+                  class="w-4"
+                  [(ngModel)]="isOverdue"
+                  (change)="applyFilters()"
+                />
               </label>
             </div>
           </app-dropdown-layout>
         }
+      <div class="flex items-center md:order-first">
+        <button
+          class="{{
+            isActive === '1' ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
+          (click)="setActive('1')"
+        >
+          All
+        </button>
+        <button
+          class="{{
+            isActive === '2' ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
+          (click)="setActive('2')"
+        >
+          Assigned
+        </button>
+        <button
+          class="{{
+            isActive === '3' ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer"
+          (click)="setActive('3')"
+        >
+          Created
+        </button>
       </div>
     </div>
-    <section class="w-full flex lg:justify-center px-8 lg:px-24 overflow-scroll pb-2">
+    <section class="w-full flex lg:justify-center overflow-y-auto pb-2">
       <table classs="min-w-full text-sm text-left mx-auto">
         <thead class="text-sm border-b rounded-base border-default">
           <tr>
@@ -120,4 +146,5 @@
         </tbody>
       </table>
     </section>
+  </div>
 </div>

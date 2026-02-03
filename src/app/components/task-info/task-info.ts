@@ -1,21 +1,23 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, output, signal } from '@angular/core';
 import { ModalLayout } from '../modal-layout/modal-layout';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../../services/task-service';
-import { TaskResponse } from '../../types/U';
+import { Member, Status, TaskResponse } from '../../types/U';
 import { DatePipe } from '@angular/common';
 import { ProjectContextService } from '../../services/project-context-service';
 import { AuthService } from '../../services/auth-service';
-import { CommentChat } from "../comment-chat/comment-chat";
+import { CommentChat } from '../comment-chat/comment-chat';
+import { FormsModule } from '@angular/forms';
+import { FloatingDropdown } from "../floating-dropdown";
+import { MemberService } from '../../services/member-service';
 
 @Component({
   selector: 'app-task-info',
-  imports: [ModalLayout, DatePipe, CommentChat],
+  imports: [ModalLayout, DatePipe, CommentChat, FormsModule, FloatingDropdown],
   templateUrl: './task-info.html',
   styles: ``,
 })
 export class TaskInfo implements OnInit {
-  isTaskInfoOpen = signal(false);
   route = inject(ActivatedRoute);
   router = inject(Router);
   taskId = signal('');
@@ -23,12 +25,39 @@ export class TaskInfo implements OnInit {
   task = signal<TaskResponse | null>(null);
   authProject = inject(ProjectContextService);
   auth = inject(AuthService);
+  isOpenMembers = signal(false);
+
+  title = signal('');
+  statusId = signal(1);
+  description = signal('');
+  projectId = signal('');
+  priority = signal('');
+  status = signal<Status>({} as Status);
+  dueDate = signal<Date | null>(null);
+  assignedTo = signal<{
+    id: string;
+    username: string;
+    email: string;
+    avatar_url: string |null;
+  } | null>(null);
+
+  taskUpdated = output<TaskResponse>();
+
+  buttonMessage(status: string) {
+    if (status == 'TODO') return 'Start';
+    if (status == 'IN_PROGRESS') return 'To Review';
+    if (status == 'IN_REVIEW') return 'Complete';
+    return '';
+  }
 
   taskInfoClosed() {
-    this.isTaskInfoOpen.set(false);
     this.router.navigate(['../..'], {
       relativeTo: this.route,
     });
+  }
+
+  prueba(dueDate: Date | null){
+    console.log(dueDate);
   }
 
   ngOnInit(): void {
@@ -41,11 +70,11 @@ export class TaskInfo implements OnInit {
     });
   }
 
-  setStatusName(name: string) {
-    if (name == 'TODO') return 'Backlog';
-    if (name == 'IN_PROGRESS') return 'In Progress';
-    if (name == 'IN_REVIEW') return 'In Review';
-    if (name == 'DONE') return 'Done';
+  setStatusName(id: number) {
+    if (id == 1) return 'Todo';
+    if (id == 2) return 'In Progress';
+    if (id == 3) return 'In Review';
+    if (id == 4) return 'Done';
 
     return '';
   }
@@ -60,6 +89,14 @@ export class TaskInfo implements OnInit {
     this.taskService.getTask(id).subscribe({
       next: (data) => {
         this.task.set(data);
+        this.statusId.set(data.status.id);
+        this.title.set(data.title);
+        this.description.set(data.description);
+        this.priority.set(data.priority);
+        this.status.set(data.status);
+        this.dueDate.set(data.dueDate);
+        this.assignedTo.set(data.assignedTo);
+        this.projectId.set(data.projectId);
       },
       error: (error) => {
         console.error('Error fetching members', error);
@@ -67,5 +104,109 @@ export class TaskInfo implements OnInit {
     });
   }
 
+  public updateTaskTitle(title: string) {
+    if((title == this.task()?.title) || !title) return
+    this.taskService.updateTaskTitle(this.taskId(), {title}).subscribe({
+      next: (data) => {
+        this.taskService.notifyActualization(data);
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
 
+  public updateTaskDescription( description: string) {
+    if(description == this.task()?.description) return
+    this.taskService.updateTaskDescription(this.taskId(), {description}).subscribe({
+      next: (data) => {
+        this.taskService.notifyActualization(data);
+        console.log(data);
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
+
+  public updateTaskMember(memberId: string) {
+    if((memberId == this.task()?.assignedTo?.id) || !memberId) return
+    this.taskService.updateTaskMember(this.taskId(), { memberId }).subscribe({
+      next: (data) => {
+        this.taskService.notifyActualization(data);
+        this.assignedTo.set(data.assignedTo);
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
+
+  public updateTaskStatus() {
+    this.taskService.updateTaskStatus(this.taskId()).subscribe({
+      next: (data) => {
+        this.taskService.notifyActualization(data);
+        this.statusId.set(this.statusId() + 1);
+        console.log(data);
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
+
+  public updateTaskPriority(priority: string) {
+    this.taskService.updateTaskPriority(this.taskId(), { priority : priority.toUpperCase() }).subscribe({
+      next: (data) => {
+        this.taskService.notifyActualization(data);
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
+
+  public updateTaskDueDate(dueDate: Date | null) {
+    this.taskService.updateTaskDueDate(this.taskId(), { dueDate }).subscribe({
+      next: (data) => {
+        this.taskService.notifyActualization(data);
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
+
+  memberService = inject(MemberService);
+
+  members = signal<Member[]>([]);
+
+  filteredMembers = signal<Member[]>([]);
+
+  searchTerm = signal('');
+
+  openMembers(){
+    this.isOpenMembers.set(!this.isOpenMembers());
+    this.loadMembers();
+  }
+
+  searchMembers(searchTerm: string) {
+    this.filteredMembers.set(searchTerm.trim() ?
+      this.members().filter((member) =>
+        member.user.username.toLowerCase().includes(searchTerm.toLowerCase()),
+      ) : this.members(),
+    );
+  }
+
+  loadMembers(){
+    this.memberService.getMembersByProject(this.projectId()).subscribe({
+      next: (data) => {
+        this.members.set(data.filter(m => m.isActive === true));
+        this.filteredMembers.set(this.members());
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
 }

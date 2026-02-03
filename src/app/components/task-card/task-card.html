@@ -1,12 +1,12 @@
-<button
+<a
   class="grid bg-white shadow-md grid-cols-[1fr_auto] grid-rows-[auto_auto] grid-flow-col rounded-lg p-3 gap-3 mr-1 cursor-pointer w-full"
-  (click)="openTaskInfo()"
+  [routerLink]="[{ outlets: { modal: ['task', task().id] } }]"
 >
   <h4 class="font-semibold! place-self-start">{{ task().title }}</h4>
   <p class="place-self-start">
     Assign to: <span class="font-semibold">{{ task().assignedTo?.username }}</span>
   </p>
-    <div class="flex {{ colorMap[task().priority] }} px-2 py-1 rounded items-center gap-2">
+    <div class="flex {{ colorMap[task().priority] }} px-2 py-1 rounded items-center gap-2 h-fit">
       <svg
         class="w-3 h-3 fill-current"
         viewBox="0 0 24 24"
@@ -32,4 +32,4 @@
   >
     {{ task().dueDate | date: 'dd/MM/yy' }}
   </p>
-</button>
+</a>

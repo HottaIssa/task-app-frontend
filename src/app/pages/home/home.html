@@ -4,15 +4,15 @@
     <button class="button-nav" (click)="isProjectFormOpen.set(true)">Create Project</button>
   </div>
   <div
-    class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full overflow-y-auto px-4 py-8"
+    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full px-4 py-8"
   >
     @for (project of projects(); track project.id) {
       <app-project-card [project]="project" />
-    } @empty {
-      <div class="col-span-4">
-        <p>No projects found.</p>
-      </div>
     }
+    <div class="h-32 border-2 bg-gray-100 hover:bg-emerald-50 px-6 py-4 w-full rounded-xl flex cursor-pointer hover:shadow-lg hover:border-emerald-400 hover:scale-102 transition-all justify-center items-center"
+    (click)="isProjectFormOpen.set(true)">
+      <p class="text-center">Create a new project</p>
+    </div>
   </div>
    @if (isProjectFormOpen()) {
       <app-modal-layout modalTitle="Create Project" (onClose)="isProjectFormOpen.set(false)">

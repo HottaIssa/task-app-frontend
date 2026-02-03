@@ -1,11 +1,10 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center p-2">
+<div class="fixed inset-0 z-50 flex justify-center px-2 py-8">
   <div
-    class="absolute inset-0 bg-black/40"
+    class="absolute inset-0 bg-black/40 -z-10"
     (click)="onClose.emit()"
   ></div>
   <div
-    class="relative bg-white rounded-lg shadow-lg shadow-black/20 flex flex-col w-full md:w-auto max-h-[90dvh] md:max-h-[80dvh]"
-    (click)="$event.stopPropagation()"
+    class="bg-white rounded-lg shadow-lg shadow-black/20 flex flex-col w-full md:w-auto max-h-fit"
   >
     <header class="flex justify-between items-center border-b border-[#eee] px-4 py-2 shrink-0">
       <h3>{{ modalTitle() }}</h3>

@@ -6,11 +6,10 @@ import { CommentService } from '../../services/comment-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommentCard } from "../comment-card/comment-card";
-import { DropdownLayout } from "../dropdown-layout/dropdown-layout";
 
 @Component({
   selector: 'app-comment-chat',
-  imports: [FormsModule, CommentCard, DropdownLayout],
+  imports: [FormsModule, CommentCard],
   templateUrl: './comment-chat.html',
   styles: ``,
 })

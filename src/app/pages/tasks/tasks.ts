@@ -36,7 +36,7 @@ export class Tasks implements OnInit {
   }
 
   setStatusName(name: string) {
-    if (name == 'TODO') return 'Backlog'
+    if (name == 'TODO') return 'Todo'
     if (name == 'IN_PROGRESS') return 'In Progress';
     if (name == 'IN_REVIEW') return 'In Review';
     if (name == 'DONE') return 'Done';

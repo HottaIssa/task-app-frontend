@@ -1,23 +1,43 @@
-<section class="w-auto lg:w-full">
-  @if (authProject.isProjectAdmin()) {
-    <form (submit)="onSubmit($event)" class="flex flex-wrap justify-end gap-4 w-full px-8 py-2">
-      <div class="flex gap-4 w-full sm:w-auto justify-end sm:justify-baseline">
-        <input
-          type="text"
-          placeholder="ID MEMBER TO ADD"
-          [formField]="memberForm.userId"
-          class="sm:w-auto! w-full!"
-        />
-        <select title="Lista de roles" [formField]="memberForm.role" class="button-nav">
-          @for (role of roleList; track $index) {
-            <option value="{{ role }}">{{ role }}</option>
-          }
-        </select>
+<section class="w-auto lg:w-full px-8">
+  <div class="flex flex-wrap justify-between py-2 gap-2">
+    <div class="flex items-center md:order-first">
+        <button
+          class="{{
+            isActiveMembers() ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer h-full"
+          (click)="toggleMembers()"
+        >
+          Active Members
+        </button>
+        <button
+          class="{{
+            !isActiveMembers() ? 'bg-emerald-400 text-white' : ''
+          }} border border-gray-200 px-2 rounded-xs cursor-pointer py-2"
+          (click)="toggleMembers()"
+        >
+          Deactived Members
+        </button>
       </div>
-      <button [disabled]="memberForm().invalid()" class="px-4! button-nav border!">Invite</button>
-    </form>
-  }
-  <div class="w-180 lg:w-full overflow-auto px-8 py-4">
+      @if (authProject.isProjectAdmin() && isActiveMembers()) {
+        <form (submit)="onSubmit($event)" class="flex flex-wrap justify-end gap-4 w-full md:w-auto">
+          <div class="flex w-full sm:w-auto justify-end sm:justify-baseline">
+            <input
+              type="text"
+              placeholder="ID MEMBER TO ADD"
+              [formField]="memberForm.userId"
+              class="sm:w-auto! w-full!"
+            />
+            <select title="Lista de roles" [formField]="memberForm.role" class="button-nav">
+              @for (role of roleList; track $index) {
+                <option value="{{ role }}">{{ role }}</option>
+              }
+            </select>
+          </div>
+          <button [disabled]="memberForm().invalid()" class="px-4! button-nav border! w-full md:w-auto">Invite</button>
+        </form>
+      }
+  </div>
+  <div class="sm:w-full md:w-180 lg:w-full overflow-auto py-4">
     <table classs="text-sm text-left rtl:text-right text-body">
       <thead
         class="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default"
@@ -28,10 +48,15 @@
           <th class="px-6 py-3">EMAIL</th>
           <th class="px-6 py-3">ROL</th>
           <th class="px-6 py-3">JOINED AT</th>
+          @if (authProject.isProjectAdmin() && isActiveMembers()) {
+            <th class="px-6 py-3">DEACTIVATE</th>
+          }@else if(authProject.isProjectAdmin() && !isActiveMembers()){
+            <th class="px-6 py-3">ACTIVE</th>
+          }
         </tr>
       </thead>
       <tbody>
-        @for (member of members(); track member.id) {
+        @for (member of filterMembers(); track member.id) {
           <tr class="bg-neutral-primary border-b border-default">
             <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
               <div>
@@ -41,10 +66,68 @@
             </th>
             <td class="px-6 py-4 whitespace-nowrap">{{ member.user.fullName }}</td>
             <td class="px-6 py-4">{{ member.user.email }}</td>
-            <td class="px-6 py-4">{{ member.roleMember }}</td>
+            @if (editMemberId() == member.id && authProject.isProjectAdmin()) {
+              <td class="px-6 py-4">
+                <select
+                  title="Lista de roles"
+                  [(ngModel)]="newRole"
+                  (change)="updateRole(member.id, { role: newRole() })"
+                  class="button-nav"
+                >
+                  @for (role of roleList; track $index) {
+                    <option value="{{ role }}">{{ role }}</option>
+                  }
+                </select>
+              </td>
+            } @else if (authProject.isProjectAdmin()) {
+              <td class="px-6 py-4" (click)="openEdit(member.roleMember, member.id)">
+                {{ member.roleMember }}
+              </td>
+            } @else {
+              <td class="px-6 py-4">{{ member.roleMember }}</td>
+            }
             <td class="px-6 py-4">
               <span>{{ member.joinedAt | date: 'dd/MM/yyyy' }}</span>
             </td>
+            @if (authProject.isProjectAdmin() && member.isActive) {
+              <th class="px-6 py-3">
+                <button class="p-3! rounded-sm cursor-pointer hover:bg-red-400/20" (click)="deactivateMember(member.id)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="red"
+                    class="size-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                    />
+                  </svg>
+                </button>
+              </th>
+            } @else if(authProject.isProjectAdmin() && !member.isActive) {
+              <th class="px-6 py-3">
+                <button class="p-3! rounded-sm cursor-pointer hover:bg-emerald-400/20" (click)="activeMember(member.id)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="green"
+                    class="size-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                    />
+                  </svg>
+                </button>
+              </th>
+            }
           </tr>
         }
       </tbody>

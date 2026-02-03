@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-3 py-2">
   <div class="flex gap-2 w-full">
     <textarea
       [(ngModel)]="content"
@@ -9,7 +9,7 @@
       (keyup.enter)="send()"
     ></textarea>
     <button
-      class="cursor-pointer p-2 border border-gray-200 rounded-sm hover:bg-gray-100"
+      class="cursor-pointer p-2 border border-gray-200 rounded-sm hover:bg-gray-100 max-h-fit"
       (click)="send()"
     >
       <svg
@@ -29,7 +29,6 @@
     </button>
   </div>
   @for (comment of comments(); track comment.id) {
-    <div class="flex flex-col">
       <app-comment-card
         [comment]="comment"
         [taskId]="taskId()"
@@ -38,18 +37,7 @@
         (cancelEditRequested)="stopEdit()"
         (deleteRequested)="openDeleting(comment.id)"
         (cancelDeleteRequested)="closeDeleting()"
+        (deleteComment)="deleteComment(comment.id)"
       ></app-comment-card>
-      @if (deletingCommentId() === comment.id) {
-        <app-dropdown-layout (onClickOutside)="closeDeleting()" class="sticky">
-          <div class="flex flex-col w-48">
-            <span> Are you sure you want to delete this comment? </span>
-            <div class="flex w-full justify-around">
-              <button class="bg-red-400 px-4 py-2 rounded-sm" (click)="deleteComment(comment.id)">Sure</button>
-              <button class="bg-emerald-400 px-4 py-2 rounded-sm" (click)="closeDeleting()">Cancel</button>
-            </div>
-          </div>
-        </app-dropdown-layout>
-      }
-    </div>
   }
 </div>

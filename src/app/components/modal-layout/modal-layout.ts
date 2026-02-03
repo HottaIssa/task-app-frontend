@@ -9,4 +9,8 @@ import { Component, input, output } from '@angular/core';
 export class ModalLayout {
   modalTitle = input<string>();
   onClose = output<void>();
+
+  onBackdropClick() {
+    this.onClose.emit();
+  }
 }

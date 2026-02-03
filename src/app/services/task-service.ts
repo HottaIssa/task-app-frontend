@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable} from '@angular/core';
 import { TaskCardResponse, TaskFilters, TaskPage, TaskRequest, TaskResponse } from '../types/U';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,14 @@ export class TaskService {
 
   private http = inject(HttpClient);
 
-  public getTasks(filters: TaskFilters){
+  private updatedTask = new Subject<TaskCardResponse>();
+  updatedTask$ = this.updatedTask.asObservable();
+
+  notifyActualization(task: TaskCardResponse) {
+    this.updatedTask.next(task);
+  }
+
+  public getTasks(filters: TaskFilters) {
     let params = new HttpParams();
 
     Object.keys(filters).forEach((key) => {
@@ -31,4 +39,27 @@ export class TaskService {
     return this.http.post<TaskCardResponse>(`${this.apiUrl}/tasks`, data);
   }
 
+  public updateTaskTitle(id: string, data: { title: string }) {
+    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/title`, data);
+  }
+
+  public updateTaskDescription(id: string, data: { description: string }) {
+    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/description`, data);
+  }
+
+  public updateTaskMember(id: string, data: { memberId: string }) {
+    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/assignedTo`, data);
+  }
+
+  public updateTaskStatus(id: string) {
+    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/status`, {});
+  }
+
+  public updateTaskPriority(id: string, data: { priority: string }) {
+    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/priority`, data);
+  }
+
+  public updateTaskDueDate(id: string, data: { dueDate: Date | null }) {
+    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/dueDate`, data);
+  }
 }

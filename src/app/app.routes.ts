@@ -37,9 +37,10 @@ export const routes: Routes = [
     children: [
       {
         path: 'task/:id',
-        component: TaskInfo
-      }
-    ]
+        component: TaskInfo,
+        outlet: 'modal',
+      },
+    ],
   },
   {
     path: 'tasks',
