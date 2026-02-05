@@ -18,6 +18,13 @@ export class TaskService {
     this.updatedTask.next(task);
   }
 
+  private deletedTask = new Subject<string>();
+  deletedTask$ = this.deletedTask.asObservable();
+
+  notifyDelete(data: string) {
+    this.deletedTask.next(data);
+  }
+
   public getTasks(filters: TaskFilters) {
     let params = new HttpParams();
 
@@ -61,5 +68,9 @@ export class TaskService {
 
   public updateTaskDueDate(id: string, data: { dueDate: Date | null }) {
     return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/dueDate`, data);
+  }
+
+  public deleteTask(id: string) {
+    return this.http.delete(`${this.apiUrl}/tasks/${id}`);
   }
 }

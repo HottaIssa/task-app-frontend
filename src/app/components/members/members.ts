@@ -85,7 +85,7 @@ export class Members implements OnInit {
     event.preventDefault();
     this.memberService.addMember(this.projectId(), this.memberModel()).subscribe({
       next: (data) => {
-        this.filterMembers.set([...this.members(), data]);
+        this.filterMembers.set([...this.filterMembers(), data]);
       },
       error: (error) => {
         console.error('Error adding member', error);

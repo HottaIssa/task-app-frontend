@@ -14,7 +14,7 @@ import {
   selector: 'app-floating-dropdown',
   standalone: true,
   template: `
-    <div class="bg-white border border-gray-200 rounded shadow-lg p-4">
+    <div class="bg-white border border-gray-200 rounded shadow-lg text-sm">
       <ng-content></ng-content>
     </div>
   `,
@@ -24,6 +24,7 @@ import {
         position: fixed; /* Clave: Se sale del flujo normal y del overflow hidden */
         z-index: 9999;
         display: block;
+        transition: opacity 0.1s ease-out;
       }
     `,
   ],
@@ -38,11 +39,22 @@ export class FloatingDropdown implements OnInit {
   top = signal(0);
   left = signal(0);
 
+  isReady = signal(false);
+
   @HostBinding('style.top.px') get styleTop() {
     return this.top();
   }
   @HostBinding('style.left.px') get styleLeft() {
     return this.left();
+  }
+
+  @HostBinding('style.visibility') get styleVisibility() {
+    return this.isReady() ? 'visible' : 'hidden';
+  }
+
+  // Opcional: Controlar opacidad para evitar parpadeos visuales si hay transición
+  @HostBinding('style.opacity') get styleOpacity() {
+    return this.isReady() ? '1' : '0';
   }
 
   ngOnInit() {
@@ -57,6 +69,8 @@ export class FloatingDropdown implements OnInit {
       this.calcularPosicion();
     });
     this.resizeObserver.observe(this.elementRef.nativeElement);
+
+    setTimeout(() => this.calcularPosicion(), 0);
   }
 
   ngOnDestroy() {
@@ -79,9 +93,9 @@ export class FloatingDropdown implements OnInit {
     const triggerRect = this.trigger().getBoundingClientRect();
     const dropdownRect = this.elementRef.nativeElement.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
     const spaceBelow = viewportHeight - triggerRect.bottom;
-
     const dropdownHeight = dropdownRect.height;
 
     if (spaceBelow < dropdownHeight && triggerRect.top > dropdownHeight) {
@@ -90,7 +104,6 @@ export class FloatingDropdown implements OnInit {
       this.top.set(triggerRect.bottom + 4);
     }
 
-    const viewportWidth = window.innerWidth;
     const dropdownWidth = dropdownRect.width;
 
     if (triggerRect.left + dropdownWidth > viewportWidth) {
@@ -98,6 +111,8 @@ export class FloatingDropdown implements OnInit {
     } else {
       this.left.set(triggerRect.left);
     }
+
+    this.isReady.set(true);
   }
 
   onClickOutside = (event: MouseEvent) => {

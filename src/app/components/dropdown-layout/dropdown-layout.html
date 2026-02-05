@@ -1,8 +1,8 @@
 <div
-  class="bg-gray-200 rounded-lg shadow-lg shadow-black/20 p-8 absolute right-0 z-10"
+  class="bg-gray-200 rounded-lg shadow-lg shadow-black/20 p-8 z-10 w-auto"
   (onClickOutside)="onClose.emit()"
 >
-  <section>
+  <section class="text-sm flex flex-col">
     <ng-content></ng-content>
   </section>
 </div>

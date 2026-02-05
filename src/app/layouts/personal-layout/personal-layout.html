@@ -1,0 +1,44 @@
+<div class="flex md:flex-row flex-col md:h-screen">
+  <aside class="h-full bg-gray-700 py-6 px-8 text-sm font-light! min-w-64 text-white">
+    <section class="flex flex-col gap-2">
+      <h2 class="text-base!">Menu</h2>
+      <nav>
+        <ul class="flex flex-col gap-1 *:cursor-pointer">
+          <li class="w-full">
+            <a
+              title="Redirect to profile"
+              [routerLink]="['/u', auth.getId(), 'profile']"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="flex border-2 px-2 rounded-sm w-full"
+              class="hover:bg-white/20"
+            >
+              Profile
+            </a>
+          </li>
+          <li>
+            <p>Solo para probar</p>
+          </li>
+        </ul>
+      </nav>
+    </section>
+  </aside>
+  <main class="bg-gray-200 flex-1 h-full">
+    <router-outlet />
+    <a
+      title="Redirect to home"
+      href="/p"
+      class="absolute top-4 right-4 z-10 bg-white/50 hover:bg-white p-2 rounded-full"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-4"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </a>
+  </main>
+</div>

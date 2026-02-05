@@ -2,7 +2,7 @@
   <div class="flex justify-between px-9 py-2 w-full shadow-md gap-2">
     <h3 class="truncate">{{ project().project.name }}</h3>
     <nav class="flex gap-3 items-center">
-      <button class="button-nav flex items-center gap-1" (click)="isMemberOpen.set(true)">
+      <button class="button-nav flex items-center gap-1" (click)="isMemberOpen.set(!isMemberOpen())">
         <span class="hidden sm:block"> Members </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +19,7 @@
           />
         </svg>
       </button>
-      <button class="button-nav flex items-center gap-1" (click)="isAboutOpen.set(true)">
+      <button class="button-nav flex items-center gap-1" (click)="isAboutOpen.set(!isAboutOpen())">
         <span class="hidden sm:block">About</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +33,22 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+          />
+        </svg>
+      </button>
+      <button class="button-nav flex items-center" (click)="isOptionsOpen.set(!isOptionsOpen())" #btnTrigger>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
           />
         </svg>
       </button>
@@ -50,6 +66,21 @@
     <app-dropdown-layout (onClose)="isAboutOpen.set(false)" class="absolute top-26 right-2">
       <app-about></app-about>
     </app-dropdown-layout>
+  }
+  @if(isOptionsOpen()){
+    <app-floating-dropdown [trigger]="btnTrigger" (onClose)="isOptionsOpen.set(false)">
+      <div class="flex flex-col w-auto bg-gray-50 p-2 gap-1 *:hover:bg-gray-200 *:rounded-sm *:cursor-pointer *:py-1 *:px-2">
+        <div (click)="aboutOpen()" >
+          About this project
+        </div>
+        <div (click)="memberOpen()">
+          See members of this project
+        </div>
+        <div>
+          Archive project
+        </div>
+      </div>
+    </app-floating-dropdown>
   }
   <router-outlet></router-outlet>
   <router-outlet name="modal"></router-outlet>

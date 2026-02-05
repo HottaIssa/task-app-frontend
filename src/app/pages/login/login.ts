@@ -16,6 +16,8 @@ export class Login {
     password: '',
   });
 
+  errorMessage = signal('');
+
   private authService = inject(AuthService);
   private router = inject(Router)
 
@@ -34,9 +36,10 @@ export class Login {
       this.authService.login(credentials).subscribe({
         next: (response) => {
           this.authService.saveToken(response.token);
-          this.router.navigate(['/']);
+          this.router.navigate(['/p']);
         },
         error: (error) => {
+          this.errorMessage.set(error.error);
           console.error('Login failed', error);
         },
       });

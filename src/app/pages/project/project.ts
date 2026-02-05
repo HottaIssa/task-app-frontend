@@ -9,17 +9,19 @@ import { ModalLayout } from "../../components/modal-layout/modal-layout";
 import { Members } from "../../components/members/members";
 import { RouterOutlet } from '@angular/router';
 import { TaskService } from '../../services/task-service';
+import { FloatingDropdown } from "../../components/floating-dropdown";
 
 
 @Component({
   selector: 'app-project',
-  imports: [Tasks, About, DropdownLayout, ModalLayout, Members, RouterOutlet],
+  imports: [Tasks, About, DropdownLayout, ModalLayout, Members, RouterOutlet, FloatingDropdown],
   templateUrl: './project.html',
   styles: ``,
 })
 export class Project implements OnInit {
   isAboutOpen = signal(false);
   isMemberOpen = signal(false);
+  isOptionsOpen = signal(false);
   private projectContext = inject(ProjectContextService);
   private projectService = inject(ProjectService);
   private taskService = inject(TaskService);
@@ -30,11 +32,25 @@ export class Project implements OnInit {
   });
   @Input('id') projectId: string = '';
 
+  aboutOpen(){
+    this.isAboutOpen.set(!this.isAboutOpen());
+    this.isOptionsOpen.set(false);
+  }
+
+  memberOpen(){
+    this.isMemberOpen.set(!this.isMemberOpen());
+    this.isOptionsOpen.set(false);
+  }
+
   ngOnInit(): void {
     if (this.projectId) {
       this.loadData(this.projectId);
 
       this.taskService.updatedTask$.subscribe((task) => {
+        this.loadData(this.projectId);
+      })
+
+      this.taskService.deletedTask$.subscribe((data) => {
         this.loadData(this.projectId);
       })
     }

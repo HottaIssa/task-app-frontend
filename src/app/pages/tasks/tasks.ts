@@ -2,13 +2,13 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TaskService } from '../../services/task-service';
 import { TaskCardResponse, TaskFilters } from '../../types/U';
 import { DatePipe } from '@angular/common';
-import { DropdownLayout } from "../../components/dropdown-layout/dropdown-layout";
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { FloatingDropdown } from "../../components/floating-dropdown";
 
 @Component({
   selector: 'app-tasks',
-  imports: [DatePipe, DropdownLayout, FormsModule],
+  imports: [DatePipe, FormsModule, FloatingDropdown],
   templateUrl: './tasks.html',
   styles: ``,
 })

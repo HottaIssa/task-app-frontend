@@ -39,7 +39,7 @@ export class Register {
       const credentials = this.registerModel();
       this.authService.register(credentials).subscribe({
         next: (response) => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/a/login']);
         },
         error: (error) => {
           console.error('Registration failed', error);

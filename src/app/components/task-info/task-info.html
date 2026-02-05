@@ -9,6 +9,7 @@
             <input
               class="bg-white! text-2xl font-semibold px-0! py-1! flex-1 field-sizing-content border-none!"
               (blur)="updateTaskTitle(title())"
+              (keyup.enter)="updateTaskTitle(title())"
               placeholder="Title"
               [(ngModel)]="title"
               type="text"
@@ -49,6 +50,7 @@
               title="Description"
               class="bg-white! text-sm px-0! py-1! field-sizing-content border-none! h-full max-w-88 min-h-12"
               (blur)="updateTaskDescription(description())"
+              (keyup.enter)="updateTaskDescription(description())"
               placeholder="Description"
               [(ngModel)]="description"
               type="text"
@@ -115,7 +117,11 @@
                   <span class="text-sm text-gray-600 font-light">{{ assignedTo()?.email }}</span>
                 </div>
               </div>
-              <button class="bg-gray-400 rounded-sm p-2 h-fit place-self-center" (click)="openMembers()" #btnTrigger>
+              <button
+                class="bg-gray-400 rounded-sm p-2 h-fit place-self-center"
+                (click)="openMembers()"
+                #btnTrigger
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -132,41 +138,38 @@
                 </svg>
               </button>
               @if (isOpenMembers()) {
-                    <app-floating-dropdown
-                      [trigger]="btnTrigger"
-                      (onClose)="isOpenMembers.set(false)"
-                    >
-                      <div class="flex flex-col">
-                        <input
-                          title="Search member"
-                          type="text"
-                          [(ngModel)]="searchTerm"
-                          (keyup.enter)="searchMembers(searchTerm())"
-                        />
-                        <div class="flex flex-col max-w-48 overflow-y-auto">
-                          @for (member of filteredMembers(); track member.id) {
-                            <div
-                              class="flex px-2 py-1 gap-2 items-center hover:bg-emerald-50 cursor-pointer"
-                              (click)="updateTaskMember(member.id)"
-                            >
-                              <div class="max-w-8">
-                                <img
-                                  src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
-                                  alt=""
-                                />
-                              </div>
-                              <div class="flex flex-col">
-                                <span>{{ member.user.username }}</span>
-                                <span class="text-sm text-gray-600 font-light">{{
-                                  member.user.email
-                                }}</span>
-                              </div>
-                            </div>
-                          }
+                <app-floating-dropdown [trigger]="btnTrigger" (onClose)="isOpenMembers.set(false)">
+                  <div class="flex flex-col p-2 gap-1">
+                    <input
+                      title="Search member"
+                      type="text"
+                      [(ngModel)]="searchTerm"
+                      (keyup.enter)="searchMembers(searchTerm())"
+                    />
+                    <div class="flex flex-col max-w-48 overflow-y-auto px-2">
+                      @for (member of filteredMembers(); track member.id) {
+                        <div
+                          class="flex px-2 py-1 gap-2 items-center hover:bg-emerald-50 cursor-pointer"
+                          (click)="updateTaskMember(member.id)"
+                        >
+                          <div class="max-w-8">
+                            <img
+                              src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
+                              alt=""
+                            />
+                          </div>
+                          <div class="flex flex-col">
+                            <span>{{ member.user.username }}</span>
+                            <span class="text-sm text-gray-600 font-light">{{
+                              member.user.email
+                            }}</span>
+                          </div>
                         </div>
-                      </div>
-                    </app-floating-dropdown>
-                  }
+                      }
+                    </div>
+                  </div>
+                </app-floating-dropdown>
+              }
             } @else {
               @if (authProject.isProjectAdmin()) {
                 <div class="flex flex-col">
@@ -182,7 +185,7 @@
                       [trigger]="btnTrigger"
                       (onClose)="isOpenMembers.set(false)"
                     >
-                      <div class="flex flex-col">
+                      <div class="flex flex-col p-2 gap-1">
                         <input
                           title="Search member"
                           type="text"
@@ -265,11 +268,9 @@
               {{ t.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
             </div>
           </div>
-          @if (
-            (authProject.isProjectAdmin() || auth.getId() === t.assignedTo?.id) && statusId() !== 4
-          ) {
+          @if (authProject.isProjectAdmin() || auth.getId() === t.assignedTo?.id) {
             <button
-              class="bg-emerald-200 rounded-sm py-2 hover:bg-emerald-300 flex items-center gap-2 justify-center"
+              class="bg-emerald-200 rounded-sm py-2 hover:bg-emerald-400 flex items-center gap-2 justify-center"
               (click)="updateTaskStatus()"
             >
               {{ buttonMessage(t.status.name) }}
@@ -288,6 +289,29 @@
                 />
               </svg>
             </button>
+            <button
+              #btnTrigger
+              class="bg-red-200 rounded-sm py-2 hover:bg-red-400 flex items-center gap-2 justify-center"
+              (click)="isDeleteModalOpen.set(!isDeleteModalOpen())"
+            >
+              Delete Task
+            </button>
+            @if (isDeleteModalOpen()) {
+              <app-floating-dropdown
+                [trigger]="btnTrigger"
+                (onClose)="isDeleteModalOpen.set(false)"
+              >
+                <div class="flex flex-col gap-2">
+                  <p>Are you sure you want to delete this task?</p>
+                  <button
+                    class="bg-red-400 rounded-sm py-2 hover:bg-red-600"
+                    (click)="deleteTask(t.id)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </app-floating-dropdown>
+            }
           }
         </section>
       } @else {
@@ -321,7 +345,7 @@
               {{ t.description }}
             </p>
           </div>
-          <div>
+          <div class="flex gap-2">
             <span class="text-sm flex items-start gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

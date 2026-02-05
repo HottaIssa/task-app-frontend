@@ -56,10 +56,6 @@ export class TaskInfo implements OnInit {
     });
   }
 
-  prueba(dueDate: Date | null){
-    console.log(dueDate);
-  }
-
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
@@ -121,7 +117,6 @@ export class TaskInfo implements OnInit {
     this.taskService.updateTaskDescription(this.taskId(), {description}).subscribe({
       next: (data) => {
         this.taskService.notifyActualization(data);
-        console.log(data);
       },
       error: (error) => {
         console.error('Error fetching members', error);
@@ -147,7 +142,6 @@ export class TaskInfo implements OnInit {
       next: (data) => {
         this.taskService.notifyActualization(data);
         this.statusId.set(this.statusId() + 1);
-        console.log(data);
       },
       error: (error) => {
         console.error('Error fetching members', error);
@@ -203,6 +197,20 @@ export class TaskInfo implements OnInit {
       next: (data) => {
         this.members.set(data.filter(m => m.isActive === true));
         this.filteredMembers.set(this.members());
+      },
+      error: (error) => {
+        console.error('Error fetching members', error);
+      },
+    });
+  }
+
+  isDeleteModalOpen = signal(false);
+  deleteTask(id:string){
+    this.taskService.deleteTask(id).subscribe({
+      next: (data) => {
+        this.taskService.notifyDelete("Task deleted");
+        this.isDeleteModalOpen.set(false);
+        this.taskInfoClosed();
       },
       error: (error) => {
         console.error('Error fetching members', error);
