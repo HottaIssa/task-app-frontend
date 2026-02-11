@@ -3,38 +3,64 @@
     <div
       class="flex md:divide-x md:flex-row divide-y md:divide-y-0 flex-col divide-gray-200 h-fit max-h-full overflow-y-auto md:overflow-y-hidden"
     >
-      @if (authProject.isProjectAdmin() && this.statusId() != 4) {
-        <section class="flex flex-col px-8 py-4 md:min-w-84 lg:min-w-104 gap-4 h-full">
-          <div class="flex flex-wrap gap-2 items-center">
-            <input
-              class="bg-white! text-2xl font-semibold px-0! py-1! flex-1 field-sizing-content border-none!"
-              (blur)="updateTaskTitle(title())"
-              (keyup.enter)="updateTaskTitle(title())"
-              placeholder="Title"
-              [(ngModel)]="title"
-              type="text"
-              maxlength="30"
-            />
-            <div class="flex {{ colorMap[priority()] }} px-2 py-1 rounded items-center gap-2 h-fit">
-              <select
-                title="priority"
-                class="font-semibold! text-sm focus:outline-none justify-self-end self-center cursor-pointer"
-                [(ngModel)]="priority"
-                (change)="updateTaskPriority(priority())"
-              >
-                <option class="text-emerald-400" value="Low">Low</option>
-                <option class="text-yellow-400" value="Medium">Medium</option>
-                <option class="text-red-400" value="High">High</option>
-              </select>
+      @if (authProject.canEdit() && this.statusId() != 4) {
+        <section class="flex flex-col p-6 gap-6 h-full relative">
+          <div class="flex flex-col gap-3 border-b border-slate-100 pb-4">
+            <div class="flex justify-between items-start gap-4">
+              <input
+                class="w-full text-xl font-bold text-slate-800 placeholder:text-slate-300 border-none focus:ring-0 p-0 bg-transparent transition-colors hover:bg-slate-50 rounded"
+                (blur)="updateTask(t.id, { title: title() })"
+                (keyup.enter)="updateTask(t.id, { title: title() })"
+                placeholder="Task Title"
+                [(ngModel)]="title"
+                type="text"
+                maxlength="60"
+              />
+
+              <div class="relative shrink-0">
+                <select
+                  title="priority"
+                  class="appearance-none pl-3 pr-8 py-1 rounded-full text-xs font-bold uppercase tracking-wider cursor-pointer border-none focus:ring-2 focus:ring-slate-200 transition-all
+              {{
+                    priority() === 'High'
+                      ? 'bg-red-100 text-red-700'
+                      : priority() === 'Medium'
+                        ? 'bg-amber-100 text-amber-700'
+                        : 'bg-emerald-100 text-emerald-700'
+                  }}"
+                  [(ngModel)]="priority"
+                  (change)="updateTask(t.id, { priority: priority().toUpperCase() })"
+                >
+                  <option class="text-slate-700 bg-white" value="Low">Low</option>
+                  <option class="text-slate-700 bg-white" value="Medium">Medium</option>
+                  <option class="text-slate-700 bg-white" value="High">High</option>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-current opacity-60"
+                >
+                  <svg
+                    class="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="flex flex-col h-fit max-w-full">
-            <span class="flex items-center gap-2">
+
+          <div class="flex flex-col gap-1.5">
+            <label
+              class="text-xs font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                stroke-width="2"
                 stroke="currentColor"
                 class="size-4"
               >
@@ -44,432 +70,414 @@
                   d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
                 />
               </svg>
-              Descritpion
-            </span>
+              Description
+            </label>
             <textarea
               title="Description"
-              class="bg-white! text-sm px-0! py-1! field-sizing-content border-none! h-full max-w-88 min-h-12"
-              (blur)="updateTaskDescription(description())"
-              (keyup.enter)="updateTaskDescription(description())"
-              placeholder="Description"
+              class="w-full text-sm text-slate-600 leading-relaxed border border-transparent hover:border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-md p-2 transition-all min-h-[120px] resize-none"
+              (blur)="updateTask(t.id, { description: description() })"
+              (keyup.enter)="updateTask(t.id, { description: description() })"
+              placeholder="Add a more detailed description..."
               [(ngModel)]="description"
-              type="text"
-              maxlength="200"
+              maxlength="500"
             ></textarea>
           </div>
-          <div class="flex items-center">
-            <span class="text-sm flex items-start gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
-                />
-              </svg>
 
-              Due Date:
-            </span>
-            <!-- <p>{{ t.dueDate | date: 'dd/MM/yyyy' }}</p> -->
-            <input
-              title="dueDate"
-              type="datetime-local"
-              [(ngModel)]="dueDate"
-              class="border-none"
-              (change)="updateTaskDueDate(dueDate())"
-            />
-          </div>
-          <div class="flex gap-2">
-            <span class="text-sm flex items-start gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-                />
-              </svg>
-
-              Assigned to:
-            </span>
-            @if (assignedTo()) {
-              <div class="flex rounded-lg px-2 bg-gray-400 py-1 gap-2 items-center">
-                <div class="max-w-8">
-                  <img
-                    src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
-                    alt=""
-                  />
-                </div>
-                <div class="flex flex-col">
-                  <span>{{ assignedTo()?.username }}</span>
-                  <span class="text-sm text-gray-600 font-light">{{ assignedTo()?.email }}</span>
-                </div>
-              </div>
-              <button
-                class="bg-gray-400 rounded-sm p-2 h-fit place-self-center"
-                (click)="openMembers()"
-                #btnTrigger
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-4 border-t border-slate-100">
+            <div class="flex flex-col gap-1.5">
+              <label
+                class="text-xs font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  stroke-width="2"
                   stroke="currentColor"
                   class="size-4"
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
                   />
                 </svg>
-              </button>
-              @if (isOpenMembers()) {
-                <app-floating-dropdown [trigger]="btnTrigger" (onClose)="isOpenMembers.set(false)">
-                  <div class="flex flex-col p-2 gap-1">
-                    <input
-                      title="Search member"
-                      type="text"
-                      [(ngModel)]="searchTerm"
-                      (keyup.enter)="searchMembers(searchTerm())"
-                    />
-                    <div class="flex flex-col max-w-48 overflow-y-auto px-2">
-                      @for (member of filteredMembers(); track member.id) {
-                        <div
-                          class="flex px-2 py-1 gap-2 items-center hover:bg-emerald-50 cursor-pointer"
-                          (click)="updateTaskMember(member.id)"
-                        >
-                          <div class="max-w-8">
-                            <img
-                              src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
-                              alt=""
-                            />
-                          </div>
-                          <div class="flex flex-col">
-                            <span>{{ member.user.username }}</span>
-                            <span class="text-sm text-gray-600 font-light">{{
-                              member.user.email
-                            }}</span>
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                </app-floating-dropdown>
-              }
-            } @else {
-              @if (authProject.isProjectAdmin()) {
-                <div class="flex flex-col">
+                Due Date
+              </label>
+              <input
+                title="dueDate"
+                type="datetime-local"
+                [(ngModel)]="dueDate"
+                class="text-sm text-slate-700 border-slate-200 rounded-md focus:border-emerald-500 focus:ring-emerald-500"
+                (change)="updateTask(t.id, { dueDate: dueDate() })"
+              />
+            </div>
+
+            <div class="flex flex-col gap-1.5 relative">
+              <label
+                class="text-xs font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="size-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                  />
+                </svg>
+                Assigned
+              </label>
+
+              <div class="flex items-center gap-2">
+                @if (assignedTo()) {
                   <button
-                    class="bg-gray-400 py-1 px-2 rounded-sm cursor-pointer"
-                    #btnTrigger
                     (click)="openMembers()"
+                    #btnTrigger
+                    class="flex items-center gap-3 pl-1 pr-3 py-1 bg-white border border-slate-200 rounded-full hover:border-emerald-400 hover:shadow-sm transition-all group w-full text-left"
                   >
-                    + Assign
+                    <img
+                      src="{{ assignedTo()?.avatar_url }}"
+                      alt=""
+                      class="w-8 h-8 rounded-full object-cover ring-2 ring-white"
+                    />
+                    <div class="flex flex-col truncate">
+                      <span
+                        class="text-sm font-medium text-slate-700 group-hover:text-emerald-700 truncate"
+                        >{{ assignedTo()?.username }}</span
+                      >
+                      <span
+                        class="text-xs font-light text-slate-400 group-hover:text-emerald-400 truncate"
+                        >{{ assignedTo()?.email }}</span
+                      >
+                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="size-4 ml-auto text-slate-400"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
                   </button>
                   @if (isOpenMembers()) {
                     <app-floating-dropdown
                       [trigger]="btnTrigger"
                       (onClose)="isOpenMembers.set(false)"
                     >
-                      <div class="flex flex-col p-2 gap-1">
+                      <div
+                        class="bg-white border border-slate-200 rounded-lg shadow-xl p-2 w-64 flex flex-col gap-2"
+                      >
                         <input
-                          title="Search member"
                           type="text"
+                          placeholder="Search member..."
                           [(ngModel)]="searchTerm"
                           (keyup.enter)="searchMembers(searchTerm())"
+                          class="text-sm border-slate-200 rounded px-2 py-1.5 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
                         />
-                        <div class="flex flex-col max-w-48 overflow-y-auto">
+                        <div class="max-h-48 overflow-y-auto flex flex-col gap-1">
                           @for (member of filteredMembers(); track member.id) {
-                            <div
-                              class="flex px-2 py-1 gap-2 items-center hover:bg-emerald-50 cursor-pointer"
+                            <button
+                              class="flex items-center gap-3 px-2 py-1.5 hover:bg-emerald-50 rounded text-left"
                               (click)="updateTaskMember(member.id)"
                             >
-                              <div class="max-w-8">
-                                <img
-                                  src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
-                                  alt=""
-                                />
-                              </div>
+                              <img
+                                title="Profile picture"
+                                src="{{ member.user.avatar_url }}"
+                                class="w-6 h-6 rounded-full"
+                              />
                               <div class="flex flex-col">
-                                <span>{{ member.user.username }}</span>
-                                <span class="text-sm text-gray-600 font-light">{{
-                                  member.user.email
+                                <span class="text-sm font-medium text-slate-800">{{
+                                  member.user.username
                                 }}</span>
+                                <span class="text-xs text-slate-500">{{ member.user.email }}</span>
                               </div>
-                            </div>
+                            </button>
                           }
                         </div>
                       </div>
                     </app-floating-dropdown>
                   }
-                </div>
-              } @else {
-                <div class="flex rounded-lg px-2 bg-gray-400 py-1 gap-2 items-center">
-                  <div class="flex flex-col">
-                    <span>No assigned</span>
-                  </div>
-                </div>
-              }
-            }
-          </div>
-          <div class="flex gap-2">
-            <span class="text-sm flex items-start gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"
-                />
-              </svg>
-
-              Created by:
-            </span>
-            <div class="flex rounded-lg px-2 bg-gray-400 py-1 gap-2 items-center">
-              <div class="max-w-8">
-                <img
-                  src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
-                  alt=""
-                />
-              </div>
-              <div class="flex flex-col">
-                <span>{{ t.createdBy.username }}</span>
-                <span class="text-sm text-gray-600 font-light">{{ t.createdBy.email }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="w-full flex justify-between gap-4">
-            <div class="text-xs flex gap-1">
-              <span class="font-light"> Created: </span>
-              {{ t.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-            </div>
-            <div class="text-xs flex gap-1">
-              <span class="font-light"> Modified: </span>
-              {{ t.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
-            </div>
-          </div>
-          @if (authProject.isProjectAdmin() || auth.getId() === t.assignedTo?.id) {
-            <button
-              class="bg-emerald-200 rounded-sm py-2 hover:bg-emerald-400 flex items-center gap-2 justify-center"
-              (click)="updateTaskStatus()"
-            >
-              {{ buttonMessage(t.status.name) }}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </button>
-            <button
-              #btnTrigger
-              class="bg-red-200 rounded-sm py-2 hover:bg-red-400 flex items-center gap-2 justify-center"
-              (click)="isDeleteModalOpen.set(!isDeleteModalOpen())"
-            >
-              Delete Task
-            </button>
-            @if (isDeleteModalOpen()) {
-              <app-floating-dropdown
-                [trigger]="btnTrigger"
-                (onClose)="isDeleteModalOpen.set(false)"
-              >
-                <div class="flex flex-col gap-2">
-                  <p>Are you sure you want to delete this task?</p>
+                } @else {
                   <button
-                    class="bg-red-400 rounded-sm py-2 hover:bg-red-600"
-                    (click)="deleteTask(t.id)"
+                    class="flex items-center gap-2 px-3 py-2 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-slate-500 text-sm hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-600 transition-all w-full"
+                    (click)="openMembers()"
+                    #btnTrigger
                   >
-                    Delete
+                    <div
+                      class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs"
+                    >
+                      +
+                    </div>
+                    Assign member
                   </button>
+                  @if (isOpenMembers()) {
+                    <app-floating-dropdown
+                      [trigger]="btnTrigger"
+                      (onClose)="isOpenMembers.set(false)"
+                    >
+                      <div
+                        class="bg-white border border-slate-200 rounded-lg shadow-xl p-2 w-64 flex flex-col gap-2"
+                      >
+                        <input
+                          type="text"
+                          placeholder="Search member..."
+                          [(ngModel)]="searchTerm"
+                          (keyup.enter)="searchMembers(searchTerm())"
+                          class="text-sm border-slate-200 rounded px-2 py-1.5 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                        />
+                        <div class="max-h-48 overflow-y-auto flex flex-col gap-1">
+                          @for (member of filteredMembers(); track member.id) {
+                            <button
+                              class="flex items-center gap-3 px-2 py-1.5 hover:bg-emerald-50 rounded text-left"
+                              (click)="updateTaskMember(member.id)"
+                            >
+                              <img
+                                title="Profile picture"
+                                src="{{ member.user.avatar_url }}"
+                                class="w-6 h-6 rounded-full"
+                              />
+                              <div class="flex flex-col">
+                                <span class="text-sm font-medium text-slate-800">{{
+                                  member.user.username
+                                }}</span>
+                                <span class="text-xs text-slate-500">{{ member.user.email }}</span>
+                              </div>
+                            </button>
+                          }
+                        </div>
+                      </div>
+                    </app-floating-dropdown>
+                  }
+                }
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label
+                class="text-xs font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-2"
+              >
+                Created By
+              </label>
+              <div class="flex items-center gap-3 pl-1">
+                <img
+                  title="Profile picture"
+                  src="{{ t.createdBy.avatar_url }}"
+                  class="w-8 h-8 rounded-full ring-2 ring-white shadow-sm"
+                />
+                <div class="flex flex-col">
+                  <span class="text-sm font-medium text-slate-700">{{ t.createdBy.username }}</span>
+                  <span
+                    class="text-xs font-light text-slate-400 group-hover:text-emerald-400 truncate"
+                    >{{ assignedTo()?.email }}</span
+                  >
                 </div>
-              </app-floating-dropdown>
-            }
-          }
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-auto flex flex-col gap-4">
+            <div
+              class="flex justify-between text-[10px] text-slate-400 uppercase tracking-wider font-medium"
+            >
+              <span>Created: {{ t.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+              <span>Updated: {{ t.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t border-slate-100">
+              <button
+                class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg py-2.5 flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95"
+                (click)="updateTaskStatus()"
+              >
+                {{ buttonMessage(statusId()) }}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="size-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </button>
+
+              <div class="relative">
+                <button
+                  #deleteTrigger
+                  class="bg-white border border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 rounded-lg p-2.5 transition-all"
+                  (click)="isDeleteModalOpen.set(!isDeleteModalOpen())"
+                  title="Delete Task"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
+                </button>
+
+                @if (isDeleteModalOpen()) {
+                  <app-floating-dropdown
+                    [trigger]="deleteTrigger"
+                    (onClose)="isDeleteModalOpen.set(false)"
+                  >
+                    <div
+                      class="p-3 w-48 bg-white rounded-lg shadow-xl border border-slate-100 flex flex-col gap-2"
+                    >
+                      <p class="text-xs text-slate-600 text-center">Are you sure?</p>
+                      <button
+                        class="bg-red-500 text-white text-sm rounded py-1 hover:bg-red-600 w-full"
+                        (click)="deleteTask(t.id)"
+                      >
+                        Confirm Delete
+                      </button>
+                    </div>
+                  </app-floating-dropdown>
+                }
+              </div>
+            </div>
+          </div>
         </section>
       } @else {
-        <section class="flex flex-col px-8 py-4 md:min-w-84 lg:min-w-104 gap-4 h-full">
-          <div class="flex flex-wrap gap-2">
-            <h2>{{ t.title }}</h2>
-            <div class="flex {{ colorMap[t.priority] }} px-2 py-1 rounded items-center gap-2">
-              <p class="font-semibold! justify-self-end self-center">{{ t.priority }}</p>
+        <section class="flex flex-col p-6 gap-6 h-full text-slate-800">
+          <div class="flex flex-col gap-3 border-b border-slate-100 pb-4">
+            <div class="flex justify-between items-start gap-4">
+              <h2 class="text-xl font-bold leading-tight">{{ t.title }}</h2>
+
+              <span
+                class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
+              {{
+                  t.priority === 'High'
+                    ? 'bg-red-100 text-red-700'
+                    : t.priority === 'Medium'
+                      ? 'bg-amber-100 text-amber-700'
+                      : 'bg-emerald-100 text-emerald-700'
+                }}"
+              >
+                {{ t.priority }}
+              </span>
             </div>
           </div>
-          <div class="flex flex-col h-fit">
-            <span class="flex items-center gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"
-                />
-              </svg>
 
-              Descritpion
-            </span>
-            <p class="text-sm font-normal! px-0 py-1">
-              {{ t.description }}
+          <div class="flex flex-col gap-1.5">
+            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+              Description
+            </h4>
+            <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
+              {{ t.description || 'No description provided.' }}
             </p>
           </div>
-          <div class="flex gap-2">
-            <span class="text-sm flex items-start gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
-                />
-              </svg>
 
-              Due Date:
-            </span>
-            <p>{{ t.dueDate | date: 'dd/MM/yyyy' }}</p>
-          </div>
-          <div class="flex gap-2">
-            <span class="text-sm flex items-start gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-                />
-              </svg>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-4 border-t border-slate-100">
+            <div>
+              <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">
+                Due Date
+              </h4>
+              <span class="text-sm font-medium text-slate-700">{{
+                t.dueDate | date: 'MMM d, yyyy h:mm a'
+              }}</span>
+            </div>
 
-              Assigned to:
-            </span>
-            @if (t.assignedTo) {
-              <div class="flex rounded-lg px-2 bg-gray-400 py-1 gap-2 items-center">
-                <div class="max-w-8">
+            <div>
+              <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">
+                Assignee
+              </h4>
+              @if (t.assignedTo) {
+                <div class="flex items-center gap-2">
                   <img
-                    src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
-                    alt=""
+                    title="Porfile picture"
+                    src="{{ t.assignedTo.avatar_url }}"
+                    class="w-6 h-6 rounded-full"
                   />
+                  <div class="flex flex-col">
+                    <span class="text-sm font-medium text-slate-700">{{
+                      t.assignedTo.username
+                    }}</span>
+                    <span
+                      class="text-xs font-light text-slate-400 group-hover:text-emerald-400 truncate"
+                      >{{ assignedTo()?.email }}</span
+                    >
+                  </div>
                 </div>
+              } @else {
+                <span class="text-sm text-slate-400 italic">Unassigned</span>
+              }
+            </div>
+
+            <div>
+              <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">
+                Created By
+              </h4>
+              <div class="flex items-center gap-2">
+                <img
+                  title="Porfile picture"
+                  src="{{ t.createdBy.avatar_url }}"
+                  class="w-6 h-6 rounded-full"
+                />
                 <div class="flex flex-col">
-                  <span>{{ t.assignedTo.username }}</span>
-                  <span class="text-sm text-gray-600 font-light">{{ t.assignedTo.email }}</span>
+                  <span class="text-sm font-medium text-slate-700">{{ t.createdBy.username }}</span>
+                  <span
+                    class="text-xs font-light text-slate-400 group-hover:text-emerald-400 truncate"
+                    >{{ assignedTo()?.email }}</span
+                  >
                 </div>
               </div>
-            } @else {
-              <div class="flex rounded-lg px-2 bg-gray-400 py-1 gap-2 items-center">
-                <div class="flex flex-col">
-                  <span>No assigned</span>
-                </div>
-              </div>
+            </div>
+          </div>
+
+          <div class="mt-auto flex flex-col gap-4">
+            <div
+              class="flex justify-between text-[10px] text-slate-400 uppercase tracking-wider font-medium"
+            >
+              <span>Created: {{ t.createdAt | date: 'dd/MM/yyyy' }}</span>
+              <span>Updated: {{ t.updatedAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+
+            @if (auth.getId() === t.assignedTo?.id && statusId() !== 4) {
+              <button
+                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg py-2.5 flex items-center justify-center gap-2 transition-all shadow-sm"
+                (click)="updateTaskStatus()"
+              >
+                {{ buttonMessage(statusId()) }}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="size-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </button>
             }
           </div>
-          <div class="flex gap-2">
-            <span class="text-sm flex items-start gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z"
-                />
-              </svg>
-
-              Created by:
-            </span>
-            <div class="flex rounded-lg px-2 bg-gray-400 py-1 gap-2 items-center">
-              <div class="max-w-8">
-                <img
-                  src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
-                  alt=""
-                />
-              </div>
-              <div class="flex flex-col">
-                <span>{{ t.createdBy.username }}</span>
-                <span class="text-sm text-gray-600 font-light">{{ t.createdBy.email }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="w-full flex justify-between gap-4">
-            <div class="text-xs flex gap-1">
-              <span class="font-light"> Created: </span>
-              {{ t.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-            </div>
-            <div class="text-xs flex gap-1">
-              <span class="font-light"> Modified: </span>
-              {{ t.updatedAt | date: 'dd/MM/yyyy HH:mm' }}
-            </div>
-          </div>
-          @if (auth.getId() === t.assignedTo?.id && statusId() !== 4) {
-            <button
-              class="bg-emerald-200 rounded-sm py-2 hover:bg-emerald-300 flex items-center gap-2 justify-center"
-              (click)="updateTaskStatus()"
-            >
-              {{ buttonMessage(t.status.name) }}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </button>
-          }
         </section>
       }
 

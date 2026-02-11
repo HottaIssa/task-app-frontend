@@ -96,7 +96,7 @@ export class Members implements OnInit {
   deactivateMember(memberId: string) {
     this.memberService.deactivateMember(this.projectId(), memberId).subscribe({
       next: (data) => {
-        this.filterMembers.update((member) =>
+        this.members.update((member) =>
           member.map((m) =>
             m.id === memberId
               ? {
@@ -106,6 +106,8 @@ export class Members implements OnInit {
               : m,
           ),
         );
+        this.filterMembers.set(this.members().filter((m) => m.isActive === this.isActiveMembers()));
+
       },
       error: (error) => {
         console.error('Error adding member', error);
@@ -116,7 +118,7 @@ export class Members implements OnInit {
   activeMember(memberId: string) {
     this.memberService.activeMember(this.projectId(), memberId).subscribe({
       next: (data) => {
-        this.filterMembers.update((member) =>
+        this.members.update((member) =>
           member.map((m) =>
             m.id === memberId
               ? {
@@ -126,6 +128,7 @@ export class Members implements OnInit {
               : m,
           ),
         );
+        this.filterMembers.set(this.members().filter((m) => m.isActive === this.isActiveMembers()));
       },
       error: (error) => {
         console.error('Error adding member', error);

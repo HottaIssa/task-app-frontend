@@ -1,8 +1,30 @@
-<a class="h-32 border-2 px-6 bg-gray-100 hover:bg-emerald-50 py-4 rounded-xl flex flex-col cursor-pointer hover:shadow-lg hover:border-emerald-400 hover:scale-102 transition-all" [routerLink]="['/p', project().id]">
-  <div class="flex flex-col">
-    <h3 class="truncate">{{ project().name}}</h3>
-    <span class="">{{project().status}}</span>
-    <p class="line-clamp-2">{{project().description}}</p>
+<a
+  [routerLink]="['/p', project().id]"
+  class="
+    group relative flex flex-col justify-between
+    h-36
+    p-5
+    bg-white border border-slate-200 rounded-xl
+    shadow-sm transition-all duration-200
+    hover:border-emerald-400 hover:shadow-md hover:-translate-y-1
+    cursor-pointer overflow-hidden
+  "
+>
+  <div class="flex flex-col gap-1">
+
+    <h4 class="font-bold text-slate-800 text-base leading-tight truncate group-hover:text-emerald-600 transition-colors" title="{{ project().name }}">
+      {{ project().name }}
+    </h4>
+
+    <p class="text-slate-500 text-sm leading-relaxed line-clamp-2 wrap-break-word">
+      {{ project().description || 'No description provided.' }}
+    </p>
   </div>
-  <img src="" alt="">
+
+  <div class="mt-auto pt-3 flex items-center gap-1 text-xs text-slate-400 font-medium group-hover:text-emerald-600 transition-colors">
+    <span>View Project</span>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+    </svg>
+  </div>
 </a>

@@ -1,22 +1,76 @@
-<div class="w-full flex flex-col items-center h-full pb-12 pt-2">
-  <div class="w-full flex justify-between px-8 shadow-md pb-2 align-center">
-    <h2>Workspaces</h2>
-    <button class="button-nav" (click)="isProjectFormOpen.set(true)">Create Project</button>
-  </div>
-  <div
-    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full px-4 py-8"
-  >
-    @for (project of projects(); track project.id) {
-      <app-project-card [project]="project" />
-    }
-    <div class="h-32 border-2 bg-gray-100 hover:bg-emerald-50 px-6 py-4 w-full rounded-xl flex cursor-pointer hover:shadow-lg hover:border-emerald-400 hover:scale-102 transition-all justify-center items-center"
-    (click)="isProjectFormOpen.set(true)">
-      <p class="text-center">Create a new project</p>
+<div class="w-full flex flex-col max-h-full pt-2">
+<section class="flex flex-col h-full overflow-y-auto">
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+    <div class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-lg font-bold text-slate-800">Active Projects</h3>
+        <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-200">
+          {{ activeProjects().length }}
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @for (project of activeProjects(); track project.id) {
+          <app-project-card [project]="project" class="h-full" />
+        }
+
+        <button
+          (click)="isProjectFormOpen.set(true)"
+          class="group relative flex flex-col items-center justify-center h-full min-h-35 p-6
+                 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50/50
+                 hover:border-emerald-500 hover:bg-emerald-50/30 hover:shadow-sm
+                 transition-all duration-200 cursor-pointer outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+        >
+          <div class="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center mb-3 group-hover:bg-emerald-100 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6 text-slate-400 group-hover:text-emerald-600">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+          </div>
+          <p class="text-sm font-medium text-slate-500 group-hover:text-emerald-700">Create new project</p>
+        </button>
+      </div>
     </div>
-  </div>
-   @if (isProjectFormOpen()) {
-      <app-modal-layout modalTitle="Create Project" (onClose)="isProjectFormOpen.set(false)">
-        <app-project-form></app-project-form>
-      </app-modal-layout>
+
+    @if (onHoldProjects().length > 0) {
+      <hr class="border-slate-200">
+
+      <div class="space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="h-2 w-2 rounded-full bg-amber-400"></div> <h3 class="text-lg font-bold text-slate-800">On Hold</h3>
+          <span class="text-sm text-slate-400">({{ onHoldProjects().length }})</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          @for (project of onHoldProjects(); track project.id) {
+            <app-project-card [project]="project" class="opacity-90 hover:opacity-100 transition-opacity" />
+          }
+        </div>
+      </div>
     }
+
+    @if (completedProjects().length > 0) {
+      <div class="space-y-4 pt-4">
+         <div class="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-slate-400">
+             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <h3 class="text-lg font-bold text-slate-700">Completed History</h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          @for (project of completedProjects(); track project.id) {
+            <app-project-card [project]="project" class="grayscale-30` hover:grayscale-0 transition-all" />
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+</section>
+  @if (isProjectFormOpen()) {
+    <app-modal-layout modalTitle="Create Project" (onClose)="isProjectFormOpen.set(false)">
+      <app-project-form></app-project-form>
+    </app-modal-layout>
+  }
 </div>

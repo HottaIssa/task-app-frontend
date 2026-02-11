@@ -2,7 +2,10 @@
   <div class="flex justify-between px-9 py-2 w-full shadow-md gap-2">
     <h3 class="truncate">{{ project().project.name }}</h3>
     <nav class="flex gap-3 items-center">
-      <button class="button-nav flex items-center gap-1" (click)="isMemberOpen.set(!isMemberOpen())">
+      <button
+        class="button-nav flex items-center gap-1"
+        (click)="isMemberOpen.set(!isMemberOpen())"
+      >
         <span class="hidden sm:block"> Members </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +39,11 @@
           />
         </svg>
       </button>
-      <button class="button-nav flex items-center" (click)="isOptionsOpen.set(!isOptionsOpen())" #btnTrigger>
+      <button
+        class="button-nav flex items-center"
+        (click)="isOptionsOpen.set(!isOptionsOpen())"
+        #btnTrigger
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -67,18 +74,28 @@
       <app-about></app-about>
     </app-dropdown-layout>
   }
-  @if(isOptionsOpen()){
+  @if (isOptionsOpen()) {
     <app-floating-dropdown [trigger]="btnTrigger" (onClose)="isOptionsOpen.set(false)">
-      <div class="flex flex-col w-auto bg-gray-50 p-2 gap-1 *:hover:bg-gray-200 *:rounded-sm *:cursor-pointer *:py-1 *:px-2">
-        <div (click)="aboutOpen()" >
-          About this project
-        </div>
-        <div (click)="memberOpen()">
-          See members of this project
-        </div>
-        <div>
-          Archive project
-        </div>
+      <div
+        class="flex flex-col w-auto bg-gray-50 p-2 gap-1 *:hover:bg-gray-200 *:rounded-sm *:cursor-pointer *:py-1 *:px-2"
+      >
+        <div (click)="aboutOpen()">About this project</div>
+        <div (click)="memberOpen()">See members of this project</div>
+        @if(projectContext.isProjectOnHold() && projectContext.canEdit()) {
+          <div (click)="updateProject(this.projectId, {status: 'ACTIVE'})">Active project</div>
+        }
+        @if((projectContext.isProjectCancelled() || projectContext.isProjectCompleted()) && projectContext.canEdit()) {
+          <div (click)="updateProject(this.projectId, {status: 'ARCHIVED'})">Archive project</div>
+        }
+        @if(projectContext.isProjectActive() && projectContext.canEdit()) {
+          <div (click)="updateProject(this.projectId, {status: 'ON_HOLD'})">On hold project</div>
+        }
+        @if(projectContext.isProjectActive() && projectContext.canEdit()){
+          <div (click)="updateProject(this.projectId, {status: 'COMPLETED'})">Complete project</div>
+        }
+        @if(projectContext.isProjectActive() && projectContext.canEdit()) {
+          <div (click)="updateProject(this.projectId, {status: 'CANCELLED'})">Cancel project</div>
+        }
       </div>
     </app-floating-dropdown>
   }

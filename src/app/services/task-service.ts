@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable} from '@angular/core';
-import { TaskCardResponse, TaskFilters, TaskPage, TaskRequest, TaskResponse } from '../types/U';
+import { TaskCardResponse, TaskFilters, TaskPage, TaskRequest, TaskResponse, TaskUpdateRequest } from '../types/U';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -44,30 +44,18 @@ export class TaskService {
 
   public createTask(data: TaskRequest) {
     return this.http.post<TaskCardResponse>(`${this.apiUrl}/tasks`, data);
-  }
-
-  public updateTaskTitle(id: string, data: { title: string }) {
-    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/title`, data);
-  }
-
-  public updateTaskDescription(id: string, data: { description: string }) {
-    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/description`, data);
-  }
+  } 
 
   public updateTaskMember(id: string, data: { memberId: string }) {
     return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/assignedTo`, data);
   }
 
+  public updateTask(id: string, data: TaskUpdateRequest) {
+    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}`, data);
+  }
+
   public updateTaskStatus(id: string) {
     return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/status`, {});
-  }
-
-  public updateTaskPriority(id: string, data: { priority: string }) {
-    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/priority`, data);
-  }
-
-  public updateTaskDueDate(id: string, data: { dueDate: Date | null }) {
-    return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/dueDate`, data);
   }
 
   public deleteTask(id: string) {

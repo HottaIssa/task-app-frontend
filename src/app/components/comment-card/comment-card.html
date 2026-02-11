@@ -1,10 +1,9 @@
 <div class="flex gap-2">
-  <div class="max-w-7">
     <img
-      src="https://marketplace.canva.com/A5alg/MAESXCA5alg/1/tl/canva-user-icon-MAESXCA5alg.png"
+      src="{{ commentLocal().member.user.avatar_url }}"
+      class="w-8 h-8 rounded-full"
       alt=""
     />
-  </div>
   <div class="flex flex-col w-full">
     <div class="flex gap-2 items-center">
       <span class="text-sm">{{ commentLocal().member.user.fullName }}</span>
@@ -54,7 +53,7 @@
           {{ commentLocal().content }}
         </p>
       </div>
-      @if (auth.getId() === commentLocal().member.user.id || authProject.isProjectAdmin()) {
+      @if (auth.getId() === commentLocal().member.user.id || authProject.canEdit()) {
         <div class="flex text-xs font-light gap-2">
           @if (auth.getId() === commentLocal().member.user.id) {
             <button class="cursor-pointer underline" (click)="startEdit()">Edit</button>

@@ -6,11 +6,14 @@ import { authGuard } from './guards/auth-guard';
 import { publicGuard } from './guards/public-guard';
 import { Project } from './pages/project/project';
 import { Tasks } from './pages/tasks/tasks';
-import { Profile } from './components/profile/profile';
+import { Profile } from './pages/profile/profile';
 import { TaskInfo } from './components/task-info/task-info';
 import { MainLayout } from './layouts/main-layout/main-layout';
 import { EmptyLayout } from './layouts/empty-layout/empty-layout';
 import { PersonalLayout } from './layouts/personal-layout/personal-layout';
+import { Invitations } from './pages/invitations/invitations';
+import { ArchivedProjects } from './pages/archived-projects/archived-projects';
+import { SidebarLayout } from './layouts/sidebar-layout/sidebar-layout';
 
 export const routes: Routes = [
   {
@@ -39,21 +42,21 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        title: 'Home | SaiDone',
-        component: Home,
-        canActivate: [authGuard],
-      },
-      {
-        path: 'profile',
-        title: 'Profile | SaiDone',
-        component: Profile,
-        canActivate: [authGuard],
-      },
-      {
-        path: 'tasks',
-        title: 'Tasks | SaiDone',
-        component: Tasks,
-        canActivate: [authGuard],
+        component: SidebarLayout,
+        children: [
+          {
+            path: '',
+            title: 'Home | SaiDone',
+            component: Home,
+            canActivate: [authGuard],
+          },
+          {
+            path: 'tasks',
+            title: 'Tasks | SaiDone',
+            component: Tasks,
+            canActivate: [authGuard],
+          },
+        ],
       },
       {
         path: ':id',
@@ -85,7 +88,19 @@ export const routes: Routes = [
         component: Profile,
         canActivate: [authGuard],
       },
-    ]
+      {
+        path: 'archived-projects',
+        title: 'Archived Projects | SaiDone',
+        component: ArchivedProjects,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'invitations',
+        title: 'Invitations | SaiDone',
+        component: Invitations,
+        canActivate: [authGuard],
+      },
+    ],
   },
   {
     path: '**',

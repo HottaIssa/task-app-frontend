@@ -3,6 +3,7 @@ export interface TaskProject {
   project: {
     id: string;
     name: string;
+    status: string;
     totalTasks: number;
     completeTasks: number;
     roleMember: roleMember;
@@ -56,6 +57,12 @@ export interface ProjectResponse {
   startDate: string;
   endDate: string;
   createdBy: string;
+}
+
+export interface ProjectDashboard {
+  activeProjects: ProjectResponse[];
+  onHoldProjects: ProjectResponse[];
+  recentCompletedProjects: ProjectResponse[];
 }
 
 export interface Member {
@@ -123,6 +130,21 @@ export interface ProjectRequest {
   endDate: string | null;
 }
 
+export interface ProjectUpdateRequest {
+  name?: string;
+  description?: string;
+  status?: string;
+  startDate?: Date | null;
+  endDate?: Date | null;
+}
+
+export interface TaskUpdateRequest {
+  title?: string;
+  description?: string;
+  priority?: string;
+  dueDate?: Date | null;
+}
+
 export interface MemberRequest {
   userId: string;
   role: roleMember;
@@ -171,6 +193,7 @@ export interface Status {
 export interface ProjectMembership {
   projectId: string;
   role: roleMember;
+  status: string;
 }
 
 export interface TaskResponse {
@@ -207,4 +230,23 @@ export interface CommentRequest {
   content: string;
 }
 
-export type roleMember = 'MEMBER' | 'ADMIN' | 'VIEWER';
+export interface GuestResponse {
+  id: string;
+  user: UserSimpleResponse;
+  project: ProjectSimpleResponse;
+  joinedAt: Date;
+}
+
+export type PasswordForm = {
+  currentPassword: string;
+  newPassword: string;
+  confirmationPassword: string;
+};
+
+export interface ProjectSimpleResponse {
+  id: string;
+  name: string;
+  updatedAt: Date;
+}
+
+export type roleMember = 'OWNER' | 'MEMBER' | 'ADMIN' | 'VIEWER';

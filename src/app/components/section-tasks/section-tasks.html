@@ -5,7 +5,7 @@
       <app-task-card [task]="task"/>
     }
   </div>
-  @if(authProject.isProjectAdmin()){
+  @if(authProject.canEdit()){
     @if(isTaskFormOpen()){
       <app-task-form [column]="column()" (taskCreated)="onTaskCreated($event)" (onClose)="isTaskFormOpen.set(false)"></app-task-form>
     } @else {

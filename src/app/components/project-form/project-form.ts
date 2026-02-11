@@ -25,7 +25,6 @@ export class ProjectForm {
 
   projectForm = form(this.projectModel, (schemaPath) => {
     required(schemaPath.name, { message: 'Name is requiered' });
-    required(schemaPath.description, { message: 'Description is requiered' });
     maxLength(schemaPath.name, 50, { message: 'Name must be at most 50 characters long' });
     maxLength(schemaPath.description, 200, {
       message: 'Description must be at most 200 characters long',
@@ -35,19 +34,10 @@ export class ProjectForm {
   onSubmit(event: Event) {
     event.preventDefault();
     submit(this.projectForm, async () => {
-      const req = {
-        ...this.projectModel(),
-        startDate: this.projectModel().startDate
-          ? new DatePipe('es-PE').transform(this.projectModel().startDate, 'yyyy-MM-dd')
-          : null,
-        endDate: this.projectModel().endDate
-          ? new DatePipe('es-PE').transform(this.projectModel().endDate, 'yyyy-MM-dd')
-          : null,
-      };
 
-      this.projectService.createProject(req).subscribe({
+      this.projectService.createProject(this.projectModel()).subscribe({
         next: (response) => {
-          this.router.navigate(['/project', response.id]);
+          this.router.navigate(['/p', response.id]);
         },
         error: (error) => {
           console.error('Create project failed', error);

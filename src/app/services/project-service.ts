@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ProjectResponse, TaskProject, Project, ProjectRequest } from '../types/U';
+import { ProjectResponse, TaskProject, Project, ProjectRequest, ProjectDashboard, ProjectUpdateRequest, ProjectSimpleResponse } from '../types/U';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +10,16 @@ export class ProjectService {
 
   private http = inject(HttpClient);
 
-  getProjects() {
-    return this.http.get<ProjectResponse[]>(`${this.apiUrl}/projects`);
+  getProjects(status: string) {
+    return this.http.get<ProjectSimpleResponse[]>(`${this.apiUrl}/projects`, {
+      params: {
+        status
+      }
+    });
+  }
+
+  getDashboardProjects() {
+    return this.http.get<ProjectDashboard>(`${this.apiUrl}/projects/dashboard`);
   }
 
   getProject(projectId: string) {
@@ -24,5 +32,9 @@ export class ProjectService {
 
   getTasksByProject(projectId: string) {
     return this.http.get<TaskProject>(`${this.apiUrl}/projects/${projectId}/tasks`);
+  }
+
+  updateProject(projectId: string, project: ProjectUpdateRequest) {
+    return this.http.patch<ProjectResponse>(`${this.apiUrl}/projects/${projectId}`, project);
   }
 }

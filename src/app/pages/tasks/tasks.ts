@@ -45,9 +45,9 @@ export class Tasks implements OnInit {
   }
 
   setBgPriority(priority: string) {
-    if(priority == 'High') return '#FEE2E2';
-    if(priority == 'Medium') return '#FEF9C3';
-    if(priority == 'Low') return '#DCFCE7';
+    if(priority == 'High') return '#F95E5E';
+    if(priority == 'Medium') return '#FDEF5E';
+    if(priority == 'Low') return '#62F194';
     return '#FFFFFF';
   }
 

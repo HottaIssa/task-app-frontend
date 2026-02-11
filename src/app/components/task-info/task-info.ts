@@ -2,7 +2,7 @@ import { Component, inject, OnInit, output, signal } from '@angular/core';
 import { ModalLayout } from '../modal-layout/modal-layout';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TaskService } from '../../services/task-service';
-import { Member, Status, TaskResponse } from '../../types/U';
+import { Member, Status, TaskResponse, TaskUpdateRequest } from '../../types/U';
 import { DatePipe } from '@angular/common';
 import { ProjectContextService } from '../../services/project-context-service';
 import { AuthService } from '../../services/auth-service';
@@ -43,10 +43,10 @@ export class TaskInfo implements OnInit {
 
   taskUpdated = output<TaskResponse>();
 
-  buttonMessage(status: string) {
-    if (status == 'TODO') return 'Start';
-    if (status == 'IN_PROGRESS') return 'To Review';
-    if (status == 'IN_REVIEW') return 'Complete';
+  buttonMessage(status: number) {
+    if (status == 1) return 'Start';
+    if (status == 2) return 'To Review';
+    if (status == 3) return 'Complete';
     return '';
   }
 
@@ -100,23 +100,16 @@ export class TaskInfo implements OnInit {
     });
   }
 
-  public updateTaskTitle(title: string) {
-    if((title == this.task()?.title) || !title) return
-    this.taskService.updateTaskTitle(this.taskId(), {title}).subscribe({
-      next: (data) => {
-        this.taskService.notifyActualization(data);
-      },
-      error: (error) => {
-        console.error('Error fetching members', error);
-      },
-    });
-  }
+  updateTask(taskId: string, task: TaskUpdateRequest){
+    if(task.title != undefined && (task.title == '' || (task.title == this.task()?.title))) return
+    if (task.priority != undefined &&  task.priority == this.task()?.priority?.toUpperCase()) return;
+    if (task.description != undefined && task.description == this.task()?.description) return;
+    if (task.dueDate != undefined && task.dueDate == this.task()?.dueDate) return;
 
-  public updateTaskDescription( description: string) {
-    if(description == this.task()?.description) return
-    this.taskService.updateTaskDescription(this.taskId(), {description}).subscribe({
+    this.taskService.updateTask(taskId, task ).subscribe({
       next: (data) => {
         this.taskService.notifyActualization(data);
+
       },
       error: (error) => {
         console.error('Error fetching members', error);
@@ -142,28 +135,7 @@ export class TaskInfo implements OnInit {
       next: (data) => {
         this.taskService.notifyActualization(data);
         this.statusId.set(this.statusId() + 1);
-      },
-      error: (error) => {
-        console.error('Error fetching members', error);
-      },
-    });
-  }
 
-  public updateTaskPriority(priority: string) {
-    this.taskService.updateTaskPriority(this.taskId(), { priority : priority.toUpperCase() }).subscribe({
-      next: (data) => {
-        this.taskService.notifyActualization(data);
-      },
-      error: (error) => {
-        console.error('Error fetching members', error);
-      },
-    });
-  }
-
-  public updateTaskDueDate(dueDate: Date | null) {
-    this.taskService.updateTaskDueDate(this.taskId(), { dueDate }).subscribe({
-      next: (data) => {
-        this.taskService.notifyActualization(data);
       },
       error: (error) => {
         console.error('Error fetching members', error);

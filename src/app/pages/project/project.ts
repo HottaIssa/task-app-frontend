@@ -1,13 +1,13 @@
 import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { ProjectService } from '../../services/project-service';
 import { Tasks } from './tasks/tasks';
-import { Column, TaskProject } from '../../types/U';
+import { Column, ProjectUpdateRequest, TaskProject } from '../../types/U';
 import { About } from '../../components/about/about';
 import { DropdownLayout } from '../../components/dropdown-layout/dropdown-layout';
 import { ProjectContextService } from '../../services/project-context-service';
 import { ModalLayout } from "../../components/modal-layout/modal-layout";
 import { Members } from "../../components/members/members";
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { TaskService } from '../../services/task-service';
 import { FloatingDropdown } from "../../components/floating-dropdown";
 
@@ -22,9 +22,10 @@ export class Project implements OnInit {
   isAboutOpen = signal(false);
   isMemberOpen = signal(false);
   isOptionsOpen = signal(false);
-  private projectContext = inject(ProjectContextService);
-  private projectService = inject(ProjectService);
-  private taskService = inject(TaskService);
+  projectContext = inject(ProjectContextService);
+  projectService = inject(ProjectService);
+  taskService = inject(TaskService);
+  router = inject(Router);
 
   project = signal<TaskProject>({
     columns: [] as Column[],
@@ -62,11 +63,23 @@ export class Project implements OnInit {
       this.projectContext.setMembership({
         projectId: this.projectId,
         role: this.project().project.roleMember,
+        status: this.project().project.status
       });
     });
   }
 
   ngOnDestroy() {
     this.projectContext.clear();
+  }
+
+  updateProject(projectId: string, project: ProjectUpdateRequest) {
+    this.projectService.updateProject(projectId, project).subscribe({
+      next: (response) => {
+        this.router.navigate(['/p']);
+      },
+      error: (error) => {
+        console.error('Error updating project', error);
+      }
+    });
   }
 }

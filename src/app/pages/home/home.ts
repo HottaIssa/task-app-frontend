@@ -14,13 +14,18 @@ import { ModalLayout } from "../../components/modal-layout/modal-layout";
 })
 export class Home implements OnInit {
   projects = signal<ProjectResponse[]>([]);
+  activeProjects = signal<ProjectResponse[]>([]);
+  onHoldProjects = signal<ProjectResponse[]>([]);
+  completedProjects = signal<ProjectResponse[]>([]);
   isProjectFormOpen = signal(false);
   constructor(private projectService: ProjectService) {}
 
   ngOnInit() {
-    this.projectService.getProjects().subscribe({
+    this.projectService.getDashboardProjects().subscribe({
       next: (data) => {
-        this.projects.set(data);
+        this.activeProjects.set(data.activeProjects);
+        this.onHoldProjects.set(data.onHoldProjects);
+        this.completedProjects.set(data.recentCompletedProjects);
       },
       error: (error) => {
         console.error('Error fetching projects', error);
