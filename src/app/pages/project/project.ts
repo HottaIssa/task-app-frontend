@@ -10,11 +10,12 @@ import { Members } from "../../components/members/members";
 import { Router, RouterOutlet } from '@angular/router';
 import { TaskService } from '../../services/task-service';
 import { FloatingDropdown } from "../../components/floating-dropdown";
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
   selector: 'app-project',
-  imports: [Tasks, About, DropdownLayout, ModalLayout, Members, RouterOutlet, FloatingDropdown],
+  imports: [Tasks, About, DropdownLayout, ModalLayout, Members, RouterOutlet, FloatingDropdown, FormsModule],
   templateUrl: './project.html',
   styles: ``,
 })
@@ -60,6 +61,7 @@ export class Project implements OnInit {
   loadData(id: string) {
     this.projectService.getTasksByProject(id).subscribe((response) => {
       this.project.set(response);
+      this.name.set(response.project.name)
       this.projectContext.setMembership({
         projectId: this.projectId,
         role: this.project().project.roleMember,
@@ -72,7 +74,10 @@ export class Project implements OnInit {
     this.projectContext.clear();
   }
 
+  name = signal('');
+
   updateProject(projectId: string, project: ProjectUpdateRequest) {
+    if(this.name() == project.name || this.name() == '') return
     this.projectService.updateProject(projectId, project).subscribe({
       next: (response) => {
         this.router.navigate(['/p']);

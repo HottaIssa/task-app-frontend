@@ -108,7 +108,7 @@
         </thead>
         <tbody class="divide-y divide-gray-100">
           @for (task of tasks(); track task.id) {
-            <tr class="hover:bg-gray-50 transition-colors">
+            <tr (click)="goToTask(task.project.id, task.id)" class="hover:bg-gray-50 transition-colors cursor-pointer">
               <td class="px-3 md:px-6 py-4 font-medium text-gray-900 whitespace-nowrap md:whitespace-normal">
                 {{ task.title }}
               </td>

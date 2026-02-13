@@ -21,4 +21,12 @@ export class UserService {
   updatePassword(data: PasswordForm) {
     return this.http.patch<string>(`${this.apiUrl}/password`, data);
   }
+
+  updateAvatar(file: File) {
+const formData = new FormData();
+formData.append('file', file);
+
+return this.http.patch(`${this.apiUrl}/avatar`, formData, {
+  responseType: 'text',
+});  }
 }

@@ -1,11 +1,11 @@
-<div [style.background-color]="column().statusColor" class="flex flex-col gap-1 w-80 rounded-xl p-2 snap-center flex-1 max-h-full">
+<div [style.background-color]="column().statusColor" class="flex flex-col gap-1 w-80 rounded-xl p-2 snap-center flex-1 max-h-full shadow-lg border border-gray-200">
   <h3 class="mx-2">{{ setColumnName(column().statusName)}}</h3>
   <div class="flex flex-col gap-4 overflow-y-auto py-2">
     @for (task of column().tasks; track task.id){
       <app-task-card [task]="task"/>
     }
   </div>
-  @if(authProject.canEdit()){
+  @if(authProject.canEdit() && !authProject.onlyView() && column().statusId == 1) {
     @if(isTaskFormOpen()){
       <app-task-form [column]="column()" (taskCreated)="onTaskCreated($event)" (onClose)="isTaskFormOpen.set(false)"></app-task-form>
     } @else {

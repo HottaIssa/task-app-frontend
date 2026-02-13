@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TaskService } from '../../services/task-service';
-import { TaskCardResponse, TaskFilters } from '../../types/U';
+import { TaskFilters, TaskSimpleResponse } from '../../types/U';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -16,10 +16,10 @@ export class Tasks implements OnInit {
   filters: TaskFilters = {};
   isActive = '1';
   isModalOpen = signal(false);
-  tasks = signal<TaskCardResponse[]>([]);
-  private projectService = inject(TaskService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  tasks = signal<TaskSimpleResponse[]>([]);
+  taskService = inject(TaskService);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
   selectedStatus: string = '';
   selectedPriority: string = '';
   searchText: string = '';
@@ -35,8 +35,13 @@ export class Tasks implements OnInit {
     });
   }
 
+  goToTask(projectId: string, taskId: string) {
+    console.log(projectId, taskId);
+    this.router.navigate([`p/${projectId}`, { outlets: { modal: ['t', taskId] } }]);
+  }
+
   setStatusName(name: string) {
-    if (name == 'TODO') return 'Todo'
+    if (name == 'TODO') return 'Todo';
     if (name == 'IN_PROGRESS') return 'In Progress';
     if (name == 'IN_REVIEW') return 'In Review';
     if (name == 'DONE') return 'Done';
@@ -45,9 +50,9 @@ export class Tasks implements OnInit {
   }
 
   setBgPriority(priority: string) {
-    if(priority == 'High') return '#F95E5E';
-    if(priority == 'Medium') return '#FDEF5E';
-    if(priority == 'Low') return '#62F194';
+    if (priority == 'High') return '#F95E5E';
+    if (priority == 'Medium') return '#FDEF5E';
+    if (priority == 'Low') return '#62F194';
     return '#FFFFFF';
   }
 
@@ -56,7 +61,7 @@ export class Tasks implements OnInit {
   }
 
   setActive(option: string) {
-    this.clearFilters()
+    this.clearFilters();
     this.isActive = option;
     if (option === '2') {
       this.filters = {
@@ -117,16 +122,16 @@ export class Tasks implements OnInit {
   }
 
   clearFilters() {
-    this.selectedStatus= '';
-    this.selectedPriority= '';
-    this.searchText= '';
-    this.dueFrom= '';
-    this.dueTo= '';
+    this.selectedStatus = '';
+    this.selectedPriority = '';
+    this.searchText = '';
+    this.dueFrom = '';
+    this.dueTo = '';
     this.isOverdue = false;
   }
 
   loadData(filters: TaskFilters) {
-    this.projectService.getTasks(filters).subscribe((response) => {
+    this.taskService.getTasks(filters).subscribe((response) => {
       this.tasks.set(response.content);
     });
   }

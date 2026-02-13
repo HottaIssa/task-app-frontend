@@ -1,7 +1,11 @@
 <header
-  class="w-full flex items-center justify-between px-2 sm:px-10 text-white bg-slate-900 border-b border-white/20"
+  class="w-full h-16 flex items-center justify-between px-4 sm:px-8 bg-slate-900 border-b border-slate-800 shadow-md relative z-40"
 >
-  <a title="Redirect to home" href="/p">
+  <a
+    title="Redirect to home"
+    href="/p"
+    class="flex items-center gap-2 hover:opacity-90 transition-opacity"
+  >
     <svg
       class="w-36"
       viewBox="0 0 189 63"
@@ -29,49 +33,257 @@
     </svg>
   </a>
 
-  <nav class="gap-2 flex align-center">
-    <a href="/p">Projects</a>
-    <a href="/p/tasks">Tasks</a>
-  </nav>
-  <button class="flex cursor-pointer" (click)="isMenuOpen.set(!isMenuOpen())" #btnTrigger>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="size-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-      />
-    </svg>
-  </button>
-  @if (isMenuOpen()) {
-    <app-floating-dropdown [trigger]="btnTrigger" (onClose)="isMenuOpen.set(false)">
-      <div class="flex flex-col gap-4 px-4 py-2 text-black w-auto">
-        <section class="flex w-full h-full min-w-64 text-black border-b border-gray-200 py-3">
-          <a [routerLink]="['/u', auth.getId(), 'profile']" class="flex flex-col gap-2 cursor-pointer w-full">
-            <div class="flex gap-4 items-center">
-              <img src="{{ profile().avatar_url }}" alt="" class="w-8 h-8 rounded-full" />
-              <div>
-                <h4>{{ profile().fullName }}</h4>
-                <p>{{ profile().email }}</p>
-              </div>
-            </div>
-          </a>
-        </section>
-        <nav
-          class="flex flex-col gap-1 text-black w-full *:hover:bg-gray-200 *:rounded-sm *:cursor-pointer *:py-1 *:px-2"
+  <div class="flex items-center">
+    <div>
+      <button
+        (click)="toggleNotifications()"
+        #notifTrigger
+        class="relative p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-full transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+        </svg>
+
+        @if (notifService.unreadCount() > 0) {
+          <span class="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-slate-900">
+            {{ notifService.unreadCount() > 9 ? '9+' : notifService.unreadCount() }}
+          </span>
+        }
+
+        <span
+          class="absolute bottom-1 right-1 h-2 w-2 rounded-full border border-slate-900"
+          [class.bg-emerald-500]="notifService.wsConnected()"
+          [class.bg-red-500]="!notifService.wsConnected()"
+        ></span>
+      </button>
+
+      @if (isNotificationsOpen()) {
+        <app-floating-dropdown
+          [trigger]="notifTrigger"
+          (onClose)="isNotificationsOpen.set(false)"
         >
-          <a href="/p">Projects</a>
-          <a [routerLink]="['/u', auth.getId(), 'archived-projects']">Archived projects</a>
-          <a href="/p/tasks">Tasks</a>
-          <a (click)="auth.logout()" href="/login">Log out</a>
-        </nav>
+          <div class="w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+              <h3 class="text-sm font-semibold text-slate-900">Notificaciones</h3>
+              @if (notifService.unreadCount() > 0) {
+                <button (click)="markAllRead()" class="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                  Marcar leídas
+                </button>
+              }
+            </div>
+
+            <div class="max-h-100 overflow-y-auto">
+              @if (notifService.isLoading()) {
+                <div class="p-4 text-center text-slate-500 text-sm">Cargando...</div>
+              } @else if (notifService.notifications().length === 0) {
+                <div class="p-8 text-center text-slate-500">
+                  <p class="text-sm">No tienes notificaciones</p>
+                </div>
+              } @else {
+                <div class="flex flex-col">
+                  @for (notif of notifService.notifications(); track notif.id) {
+                    <button
+                      (click)="handleNotificationClick(notif)"
+                      class="w-full text-left px-4 py-3 hover:bg-slate-50 border-b border-slate-100 last:border-0 transition-colors flex gap-3 items-start"
+                      [class.bg-blue-50]="!notif.isRead"
+                    >
+                      <div class="mt-1.5">
+                        <div class="w-2 h-2 rounded-full" [class.bg-blue-500]="!notif.isRead" [class.bg-slate-300]="notif.isRead"></div>
+                      </div>
+
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm text-slate-800 wrap-break-words" [class.font-medium]="!notif.isRead">
+                          {{ notif.message }}
+                        </p>
+                        <div class="flex justify-between items-center mt-1">
+                          <span class="text-xs text-slate-500">{{ notif.createdAt | date:'short' }}</span>
+                          @if(notif.taskTitle) {
+                             <span class="text-xs px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 max-w-30 truncate">
+                               {{ notif.taskTitle }}
+                             </span>
+                          }
+                        </div>
+                      </div>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="bg-slate-50 p-2 border-t border-slate-100 text-center">
+                <a href="/p/notifications" class="text-xs text-slate-600 hover:text-blue-600 font-medium">Ver todas</a>
+            </div>
+          </div>
+        </app-floating-dropdown>
+      }
+    </div>
+
+  <div class="relative">
+    <button
+      class="flex items-center gap-3 pl-3 pr-2 py-1.5 rounded-full transition-all duration-200 hover:bg-slate-800 border border-transparent hover:border-slate-700 group"
+      (click)="isMenuOpen.set(!isMenuOpen())"
+      #btnTrigger
+    >
+      <div class="hidden md:flex flex-col items-end text-right">
+        <span class="text-sm font-medium text-slate-200 group-hover:text-white leading-none">
+          {{ profile().fullName }}
+        </span>
+        <span class="text-xs text-slate-500 group-hover:text-slate-400 leading-none mt-1"
+          >View Profile</span
+        >
       </div>
-    </app-floating-dropdown>
-  }
+
+      <div class="relative">
+        <img
+          [src]="profile().avatar_url"
+          class="w-9 h-9 rounded-full object-cover ring-2 ring-slate-700 group-hover:ring-emerald-500 transition-all"
+          alt="User Avatar"
+        />
+        <span
+          class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full"
+        ></span>
+      </div>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        class="w-4 h-4 text-slate-500 group-hover:text-white transition-transform duration-200"
+        [class.rotate-180]="isMenuOpen()"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </button>
+
+    @if (isMenuOpen()) {
+      <app-floating-dropdown
+        [trigger]="btnTrigger"
+        (onClose)="isMenuOpen.set(false)"
+        class="absolute left-0 mt-2"
+      >
+        <div
+          class="w-72 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-200"
+        >
+          <div class="px-5 py-4 bg-slate-50 border-b border-slate-100">
+            <a
+              [routerLink]="['/u', auth.getId(), 'profile']"
+              (click)="isMenuOpen.set(false)"
+              class="flex items-center gap-3 group"
+            >
+              <img
+                [src]="profile().avatar_url"
+                alt=""
+                class="w-10 h-10 rounded-full object-cover shadow-sm group-hover:scale-105 transition-transform"
+              />
+              <div class="flex-1 min-w-0">
+                <h4
+                  class="text-sm font-bold text-slate-800 truncate group-hover:text-emerald-600 transition-colors"
+                >
+                  {{ profile().fullName }}
+                </h4>
+                <p class="text-xs text-slate-500 truncate">{{ profile().email }}</p>
+              </div>
+            </a>
+          </div>
+
+          <nav class="p-2 flex flex-col gap-1">
+            <a
+              href="/p"
+              (click)="isMenuOpen.set(false)"
+              class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 rounded-lg hover:bg-slate-50 hover:text-emerald-600 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 text-slate-400"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+                />
+              </svg>
+              Home Projects
+            </a>
+
+            <a
+              href="/p/tasks"
+              (click)="isMenuOpen.set(false)"
+              class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 rounded-lg hover:bg-slate-50 hover:text-emerald-600 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 text-slate-400"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+              My Tasks
+            </a>
+
+            <a
+              [routerLink]="['/u', auth.getId(), 'archived-projects']"
+              (click)="isMenuOpen.set(false)"
+              class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-700 rounded-lg hover:bg-slate-50 hover:text-emerald-600 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 text-slate-400"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+                />
+              </svg>
+              Archived Projects
+            </a>
+          </nav>
+
+          <div class="p-2 border-t border-slate-100 mt-1">
+            <a
+              (click)="auth.logout()"
+              href="/login"
+              class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors w-full"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                />
+              </svg>
+              Sign out
+            </a>
+          </div>
+        </div>
+      </app-floating-dropdown>
+    }
+  </div>
+  </div>
 </header>

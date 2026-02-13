@@ -30,6 +30,31 @@
               <span class="text-sm">Profile</span>
             </a>
           </li>
+          <li>
+            <a
+              title="Redirect to history"
+              [routerLink]="['/u', auth.getId(), 'history']"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="!bg-emerald-500/10 !text-emerald-400 font-medium"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 hover:bg-white/5 hover:text-white group"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+              <span class="text-sm">History</span>
+            </a>
+          </li>
 
           <li>
             <a
@@ -56,7 +81,6 @@
               <span class="text-sm">Archived projects</span>
             </a>
           </li>
-
           <li>
             <a
               title="Redirect to invitations"

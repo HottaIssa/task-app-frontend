@@ -104,4 +104,27 @@ export class Profile {
         console.error('Error al copiar: ', err);
       });
   }
+
+  isUploadingImage = signal(false);
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      this.isUploadingImage.set(true); // Mostrar spinner
+
+      this.userService.updateAvatar(file).subscribe({
+        next: (response) => {
+          console.log('Avatar actualizado');
+          this.isUploadingImage.set(false);
+          this.loadData();
+        },
+        error: (err) => {
+          console.error(err);
+          this.isUploadingImage.set(false);
+          alert('Error al subir la imagen');
+        },
+      });
+    }
+  }
 }

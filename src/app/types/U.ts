@@ -38,7 +38,9 @@ export interface TaskCardResponse {
 export interface TaskSimpleResponse {
   id: string;
   title: string;
+  description: string;
   priority: string;
+  status: Status;
   dueDate: Date;
   isOverdue: boolean;
   assignedTo: {
@@ -47,6 +49,11 @@ export interface TaskSimpleResponse {
     email: string;
     avatar_url: string |null;
   } | null;
+  project: {
+    id: string;
+    name: string;
+    updateAt: Date;
+  };
 }
 
 export interface ProjectResponse {
@@ -63,6 +70,11 @@ export interface ProjectDashboard {
   activeProjects: ProjectResponse[];
   onHoldProjects: ProjectResponse[];
   recentCompletedProjects: ProjectResponse[];
+}
+
+export interface ProjectHistory {
+  completedProjects: ProjectSimpleResponse[];
+  cancelledProjects: ProjectSimpleResponse[];
 }
 
 export interface Member {
@@ -174,7 +186,7 @@ export interface TaskFilters {
 }
 
 export interface TaskPage {
-  content: TaskCardResponse[];
+  content: TaskSimpleResponse[];
   page: {
     size: number;
     number: number;
@@ -247,6 +259,25 @@ export interface ProjectSimpleResponse {
   id: string;
   name: string;
   updatedAt: Date;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  taskId?: string;
+  taskTitle?: string;
+  message: string;
+  projectId?: string;
+  type:
+    | 'ASSIGNED'
+    | 'COMMENT'
+    | 'STATUS_CHANGE'
+    | 'MEMBER_ADDED'
+    | 'PROJECT_CREATED'
+    | 'TASK_CREATED';
+  isRead: boolean;
+  createdAt: string;
+  timestamp?: string;
 }
 
 export type roleMember = 'OWNER' | 'MEMBER' | 'ADMIN' | 'VIEWER';

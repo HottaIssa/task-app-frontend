@@ -25,6 +25,7 @@ export class ProjectContextService {
   isProjectOnHold = computed(() => this.projectStatus() === 'ON_HOLD');
   isProjectCompleted = computed(() => this.projectStatus() === 'COMPLETED');
   isProjectCancelled = computed(() => this.projectStatus() === 'CANCELLED');
+  onlyView = computed(()=> this.isProjectOnHold() || this.isProjectCompleted() || this.isProjectCancelled() || this.isProjectArchived() );
 
   setMembership(membership: ProjectMembership) {
     this._membership.set(membership);

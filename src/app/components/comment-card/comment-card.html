@@ -1,82 +1,80 @@
-<div class="flex gap-2">
-    <img
-      src="{{ commentLocal().member.user.avatar_url }}"
-      class="w-8 h-8 rounded-full"
-      alt=""
-    />
-  <div class="flex flex-col w-full">
-    <div class="flex gap-2 items-center">
-      <span class="text-sm">{{ commentLocal().member.user.fullName }}</span>
-      <span class="text-xs font-light">{{ commentLocal().timeAgo }}</span>
+<div class="flex gap-3 w-full group">
+  <img
+    src="{{ commentLocal().member.user.avatar_url }}"
+    class="w-8 h-8 rounded-full object-cover ring-2 ring-white shadow-sm shrink-0"
+    alt="{{ commentLocal().member.user.fullName }}"
+  />
+
+  <div class="flex flex-col w-full gap-1">
+
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-bold text-slate-800">{{ commentLocal().member.user.fullName }}</span>
+      <span class="text-xs font-medium text-slate-400">{{ commentLocal().timeAgo }}</span>
     </div>
+
     @if (isEditing()) {
-      <div class="flex flex-col gap-1 w-full">
-        <div class="flex gap-2">
-          <textarea
-            [(ngModel)]="content"
-            class="w-full text-sm flex-1"
-            placeholder="Type your comment"
-            type="text"
-            rows="4"
-            (keyup.enter)="updateComment()"
-          ></textarea>
+      <div class="flex flex-col gap-2 w-full mt-1 animate-in fade-in zoom-in-95 duration-200">
+        <textarea
+          [(ngModel)]="content"
+          class="w-full text-sm text-slate-700 bg-white border border-slate-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all resize-y"
+          placeholder="Edit your comment..."
+          rows="3"
+          (keyup.enter)="updateComment()"
+        ></textarea>
+
+        <div class="flex items-center justify-end gap-2">
           <button
-            class="cursor-pointer p-2 border border-gray-200 rounded-sm hover:bg-gray-100 self-start"
+            class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+            (click)="cancelEditing()"
+          >
+            Cancel
+          </button>
+          <button
+            class="px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-md shadow-sm transition-colors flex items-center gap-1"
             (click)="updateComment()"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
-              />
-            </svg>
+            Save changes
           </button>
         </div>
-        <button
-          class="cursor-pointer p-2 border border-gray-200 rounded-sm hover:bg-gray-100 self-end"
-          (click)="cancelEditing()"
-        >
-          Cancel edit
-        </button>
       </div>
-    } @else {
-      <div class="p-2 bg-gray-200 w-fit rounded-sm">
-        <p class="text-sm w-fit!">
-          {{ commentLocal().content }}
-        </p>
+    }
+    @else {
+      <div class="px-3.5 py-2.5 bg-slate-100 text-slate-700 text-sm rounded-2xl rounded-tl-sm w-fit max-w-[90%] leading-relaxed shadow-sm">
+        {{ commentLocal().content }}
       </div>
+
       @if (auth.getId() === commentLocal().member.user.id || authProject.canEdit()) {
-        <div class="flex text-xs font-light gap-2">
+        <div class="flex items-center gap-3 mt-1 ml-1">
+
           @if (auth.getId() === commentLocal().member.user.id) {
-            <button class="cursor-pointer underline" (click)="startEdit()">Edit</button>
-            <div class="font-bold text-md">·</div>
+            <button class="text-[11px] font-semibold text-slate-400 hover:text-emerald-600 transition-colors" (click)="startEdit()">
+              Edit
+            </button>
+            <span class="text-slate-300 text-[10px]">•</span>
           }
-          <button class="cursor-pointer underline" (click)="onDeleteClick()" #btnTrigger>
-            Delete
-          </button>
-          @if (isOpenDeleting()) {
-            <app-floating-dropdown [trigger]="btnTrigger" (onClose)="onDeleteClick()">
-              <div class="flex flex-col max-w-48 text-sm">
-                <span> Are you sure you want to delete this comment? </span>
-                <div class="flex w-full justify-around">
-                  <button
-                    class="bg-red-400 px-4 py-1 rounded-sm w-full cursor-pointer"
-                    (click)="emitDelete()"
-                  >
-                    Sure
-                  </button>
+
+          <div class="relative">
+            <button class="text-[11px] font-semibold text-slate-400 hover:text-red-600 transition-colors" (click)="onDeleteClick()" #btnTrigger>
+              Delete
+            </button>
+
+            @if (isOpenDeleting()) {
+              <app-floating-dropdown [trigger]="btnTrigger" (onClose)="onDeleteClick()">
+                <div class="p-3 w-48 bg-white border border-slate-200 shadow-xl rounded-lg flex flex-col gap-3">
+                  <p class="text-xs text-slate-600 font-medium text-center">Delete this comment?</p>
+                  <div class="flex justify-between gap-2">
+                    <button class="flex-1 px-2 py-1.5 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded transition-colors" (click)="onDeleteClick()">
+                      Cancel
+                    </button>
+                    <button class="flex-1 px-2 py-1.5 text-xs text-white bg-red-500 hover:bg-red-600 rounded shadow-sm transition-colors" (click)="emitDelete()">
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </app-floating-dropdown>
-          }
+              </app-floating-dropdown>
+            }
+          </div>
+
         </div>
       }
     }

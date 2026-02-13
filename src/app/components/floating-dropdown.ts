@@ -13,17 +13,19 @@ import {
   selector: 'app-floating-dropdown',
   standalone: true,
   template: `
-    <div class="bg-white border border-gray-200 rounded shadow-lg text-sm">
+    <div class="bg-white border border-gray-200 rounded shadow-lg text-sm max-w-[95vw]">
       <ng-content></ng-content>
     </div>
   `,
   styles: [
     `
       :host {
-        position: fixed; /* Clave: Se sale del flujo normal y del overflow hidden */
+        position: fixed;
         z-index: 9999;
         display: block;
         transition: opacity 0.1s ease-out;
+        /* Evita que el contenido sea más ancho que la pantalla en móviles */
+        max-width: 95vw;
       }
     `,
   ],
@@ -37,7 +39,6 @@ export class FloatingDropdown implements OnInit {
 
   top = signal(0);
   left = signal(0);
-
   isReady = signal(false);
 
   @HostBinding('style.top.px') get styleTop() {
@@ -46,18 +47,14 @@ export class FloatingDropdown implements OnInit {
   @HostBinding('style.left.px') get styleLeft() {
     return this.left();
   }
-
   @HostBinding('style.visibility') get styleVisibility() {
     return this.isReady() ? 'visible' : 'hidden';
   }
-
-  // Opcional: Controlar opacidad para evitar parpadeos visuales si hay transición
   @HostBinding('style.opacity') get styleOpacity() {
     return this.isReady() ? '1' : '0';
   }
 
   ngOnInit() {
-    // Escuchas globales
     window.addEventListener('scroll', this.updatePosition, true);
     window.addEventListener('resize', this.updatePosition, true);
     document.addEventListener('click', this.onClickOutside, true);
@@ -67,8 +64,10 @@ export class FloatingDropdown implements OnInit {
     this.resizeObserver = new ResizeObserver(() => {
       this.calcularPosicion();
     });
+    // Observamos el propio dropdown por si su contenido cambia de tamaño
     this.resizeObserver.observe(this.elementRef.nativeElement);
 
+    // Forzamos un cálculo inicial
     setTimeout(() => this.calcularPosicion(), 0);
   }
 
@@ -91,26 +90,43 @@ export class FloatingDropdown implements OnInit {
 
     const triggerRect = this.trigger().getBoundingClientRect();
     const dropdownRect = this.elementRef.nativeElement.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-    const viewportWidth = window.innerWidth;
 
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    const gap = 4; // Espacio entre el botón y el menú
+    const edgePadding = 8; // Mínima distancia con el borde de la pantalla
+
+    // --- CALCULO VERTICAL (Y) ---
     const spaceBelow = viewportHeight - triggerRect.bottom;
     const dropdownHeight = dropdownRect.height;
 
-    if (spaceBelow < dropdownHeight && triggerRect.top > dropdownHeight) {
-      this.top.set(triggerRect.top - dropdownHeight);
+    // Si no cabe abajo y hay más espacio arriba, lo ponemos arriba
+    if (spaceBelow < dropdownHeight && triggerRect.top > spaceBelow) {
+      this.top.set(triggerRect.top - dropdownHeight - gap);
     } else {
-      this.top.set(triggerRect.bottom + 4);
+      this.top.set(triggerRect.bottom + gap);
     }
 
+    // --- CALCULO HORIZONTAL (X) con colisión ---
     const dropdownWidth = dropdownRect.width;
 
-    if (triggerRect.left + dropdownWidth > viewportWidth) {
-      this.left.set(triggerRect.right - dropdownWidth);
-    } else {
-      this.left.set(triggerRect.left);
+    // 1. Intentar alinear a la izquierda del trigger
+    let finalLeft = triggerRect.left;
+
+    // 2. Si se sale por la derecha (Left + Ancho > AnchoPantalla),
+    // lo alineamos al borde derecho de la pantalla (menos el padding)
+    if (finalLeft + dropdownWidth > viewportWidth - edgePadding) {
+      finalLeft = viewportWidth - dropdownWidth - edgePadding;
     }
 
+    // 3. Si al ajustarlo a la derecha, ahora se sale por la izquierda
+    // (ej: pantalla movil muy estrecha), forzarlo al padding izquierdo
+    if (finalLeft < edgePadding) {
+      finalLeft = edgePadding;
+    }
+
+    this.left.set(finalLeft);
     this.isReady.set(true);
   }
 

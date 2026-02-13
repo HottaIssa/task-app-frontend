@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ProjectResponse, TaskProject, Project, ProjectRequest, ProjectDashboard, ProjectUpdateRequest, ProjectSimpleResponse } from '../types/U';
+import { ProjectResponse, TaskProject, Project, ProjectRequest, ProjectDashboard, ProjectUpdateRequest, ProjectSimpleResponse, ProjectHistory } from '../types/U';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +20,10 @@ export class ProjectService {
 
   getDashboardProjects() {
     return this.http.get<ProjectDashboard>(`${this.apiUrl}/projects/dashboard`);
+  }
+
+  getHistoryProjects() {
+    return this.http.get<ProjectHistory>(`${this.apiUrl}/projects/history`);
   }
 
   getProject(projectId: string) {

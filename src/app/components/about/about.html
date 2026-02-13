@@ -19,7 +19,7 @@
       </svg>
       Description</span
     >
-    @if (projectContext.isProjectOwner()) {
+    @if (projectContext.isProjectOwner() && !projectContext.onlyView()) {
       <textarea
         title="Description"
         class="w-full text-sm text-slate-600 leading-relaxed border border-transparent hover:border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-md p-2 transition-all min-h-[120px] resize-none"
@@ -30,13 +30,17 @@
         maxlength="500"
       ></textarea>
     } @else {
-      <p>
-        {{ project().description }}
-      </p>
+      @if(project().description){
+        <p>
+          {{ project().description }}
+        </p>
+      }@else {
+        <p>No description provided.</p>
+      }
     }
   </div>
   <div class="flex gap-4 flex-col md:flex-row">
-    <div class="flex flex-col rounded-sm bg-white border border-gray-200 shadow-sm p-3">
+    <div class="flex flex-col rounded-sm bg-white border border-gray-200 shadow-sm p-3 w-full">
       <span> Created By </span>
       <div class="flex items-center gap-2">
         <img src="{{ project().createdBy.avatar_url }}" alt="" class="rounded-full size-8" />
@@ -54,7 +58,7 @@
         <div class="flex flex-col w-full">
           <span class="text-gray-600 font-light text-xs">Start Date:</span>
           <div class="flex text-xs">
-            @if (projectContext.isProjectOwner()) {
+            @if (projectContext.isProjectOwner() && !projectContext.onlyView()) {
               <input
                 title="Start date"
                 [(ngModel)]="startDate"
@@ -70,7 +74,7 @@
         <div class="flex flex-col w-full">
           <span class="text-gray-600 font-light text-xs">End Date:</span>
           <div class="flex text-xs">
-            @if (projectContext.isProjectOwner()) {
+            @if (projectContext.isProjectOwner() && !projectContext.onlyView()) {
               <input
                 title="End date"
                 [(ngModel)]="endDate"

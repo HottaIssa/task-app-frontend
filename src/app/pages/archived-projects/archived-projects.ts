@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { ProjectService } from '../../services/project-service';
 import { ProjectSimpleResponse } from '../../types/U';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-archived-projects',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './archived-projects.html',
   styles: ``,
 })

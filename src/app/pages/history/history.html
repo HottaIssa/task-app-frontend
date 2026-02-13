@@ -1,0 +1,117 @@
+<section class="flex w-full justify-center py-8 px-4">
+  <div class="w-full max-w-4xl mx-auto">
+
+    <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+
+      <div class="p-6 border-b border-slate-100 flex items-start gap-4">
+        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </div>
+        <div class="flex flex-col gap-1">
+          <h3 class="text-lg font-bold text-slate-800">History Projects</h3>
+          <p class="text-slate-500 text-sm">
+            View and manage your completed and cancelled projects.
+          </p>
+        </div>
+      </div>
+
+      <div class="px-6 py-3 bg-slate-50 border-b border-slate-100 flex items-center">
+        <div class="flex p-1 space-x-1 bg-slate-200/60 rounded-lg">
+
+          <button
+            (click)="activeTab.set('completed')"
+            class="px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-200 flex items-center gap-2"
+            [class]="activeTab() === 'completed' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+          >
+            Completed
+            <span
+              class="px-2 py-0.5 rounded-full text-xs"
+              [class]="activeTab() === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-500'"
+            >
+              {{ projects().completedProjects.length }}
+            </span>
+          </button>
+
+          <button
+            (click)="activeTab.set('cancelled')"
+            class="px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-200 flex items-center gap-2"
+            [class]="activeTab() === 'cancelled' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+          >
+            Cancelled
+            <span
+              class="px-2 py-0.5 rounded-full text-xs"
+              [class]="activeTab() === 'cancelled' ? 'bg-red-100 text-red-700' : 'bg-slate-200 text-slate-500'"
+            >
+              {{ projects().cancelledProjects.length }}
+            </span>
+          </button>
+
+        </div>
+      </div>
+
+      <div class="flex flex-col min-h-[300px]"> @if (activeTab() === 'completed') {
+          <div class="flex flex-col divide-y divide-slate-100 animate-in fade-in duration-300">
+
+            @for (project of projects().completedProjects; track project.id) {
+              <a [routerLink]="['/p', project.id]" class="group flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors duration-200 cursor-pointer">
+                <div class="flex items-center gap-4 overflow-hidden">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-emerald-400 group-hover:text-emerald-500 transition-colors shrink-0">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                  <div class="flex flex-col truncate">
+                    <span class="font-medium text-slate-700 group-hover:text-slate-900 truncate">{{ project.name }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4 shrink-0 pl-4">
+                  <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full group-hover:bg-emerald-100 transition-all">
+                    Completed: {{ project.updatedAt | date: 'MMM d, y' }}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4 text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                  </svg>
+                </div>
+              </a>
+            } @empty {
+              <div class="flex flex-col items-center justify-center py-16 text-center text-slate-400">
+                <p class="text-sm font-medium text-slate-600">No completed projects yet.</p>
+              </div>
+            }
+          </div>
+        }
+
+        @if (activeTab() === 'cancelled') {
+          <div class="flex flex-col divide-y divide-slate-100 animate-in fade-in duration-300">
+
+            @for (project of projects().cancelledProjects; track project.id) {
+              <a [routerLink]="['/p', project.id]" class="group flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors duration-200 cursor-pointer">
+                <div class="flex items-center gap-4 overflow-hidden">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-red-400 group-hover:text-red-500 transition-colors shrink-0">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                  <div class="flex flex-col truncate">
+                    <span class="font-medium text-slate-700 group-hover:text-slate-900 truncate">{{ project.name }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4 shrink-0 pl-4">
+                  <span class="text-xs font-medium text-red-600 bg-red-50 px-2.5 py-1 rounded-full group-hover:bg-red-100 transition-all">
+                    Cancelled: {{ project.updatedAt | date: 'MMM d, y' }}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4 text-slate-300 group-hover:text-red-500 group-hover:translate-x-1 transition-all">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                  </svg>
+                </div>
+              </a>
+            } @empty {
+              <div class="flex flex-col items-center justify-center py-16 text-center text-slate-400">
+                <p class="text-sm font-medium text-slate-600">No cancelled projects yet.</p>
+              </div>
+            }
+          </div>
+        }
+
+      </div>
+    </div>
+  </div>
+</section>

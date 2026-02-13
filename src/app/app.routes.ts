@@ -14,6 +14,7 @@ import { PersonalLayout } from './layouts/personal-layout/personal-layout';
 import { Invitations } from './pages/invitations/invitations';
 import { ArchivedProjects } from './pages/archived-projects/archived-projects';
 import { SidebarLayout } from './layouts/sidebar-layout/sidebar-layout';
+import { History } from './pages/history/history';
 
 export const routes: Routes = [
   {
@@ -98,6 +99,12 @@ export const routes: Routes = [
         path: 'invitations',
         title: 'Invitations | SaiDone',
         component: Invitations,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'history',
+        title: 'History | SaiDone',
+        component: History,
         canActivate: [authGuard],
       },
     ],
