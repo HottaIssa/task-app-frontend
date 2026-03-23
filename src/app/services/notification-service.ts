@@ -5,6 +5,7 @@ import { AuthService } from './auth-service';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import type { Notification } from '../types/U';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class NotificationService {
   private wsService = inject(WebSocketService);
   private authService = inject(AuthService);
 
-  private readonly apiUrl = 'http://localhost:8080/api/notifications';
+  private readonly apiUrl = `${environment.apiUrl}/notifications`;
 
   private notificationsState = signal<Notification[]>([]);
   public notifications = this.notificationsState.asReadonly();

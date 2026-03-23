@@ -1,7 +1,8 @@
 import { RxStompConfig } from '@stomp/rx-stomp';
+import { environment } from '../../environments/environment';
 
 export const myRxStompConfig: RxStompConfig = {
-  brokerURL: 'ws://localhost:8080/ws',
+  brokerURL: `${environment.wsUrl}`,
 
   heartbeatIncoming: 4000, // ✅ Cambiar de 0 a 4000
   heartbeatOutgoing: 4000, // ✅ Cambiar de 20000 a 4000

@@ -2,12 +2,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable} from '@angular/core';
 import { TaskCardResponse, TaskFilters, TaskPage, TaskRequest, TaskResponse, TaskUpdateRequest } from '../types/U';
 import { Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = `${environment.apiUrl}`;
 
   private http = inject(HttpClient);
 
@@ -44,7 +45,7 @@ export class TaskService {
 
   public createTask(data: TaskRequest) {
     return this.http.post<TaskCardResponse>(`${this.apiUrl}/tasks`, data);
-  } 
+  }
 
   public updateTaskMember(id: string, data: { memberId: string }) {
     return this.http.patch<TaskCardResponse>(`${this.apiUrl}/tasks/${id}/assignedTo`, data);

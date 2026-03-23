@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {jwtDecode} from 'jwt-decode';
-import { GuestResponse, LoginRequest, LoginResponse, PasswordForm, RegisterRequest, UserResponse } from '../types/U';
+import { LoginRequest, LoginResponse, RegisterRequest, UserResponse } from '../types/U';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   http = inject(HttpClient);
 
